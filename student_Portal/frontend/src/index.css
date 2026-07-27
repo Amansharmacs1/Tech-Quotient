@@ -1,0 +1,172 @@
+:root {
+  --primary-orange: #f26422;
+  --primary-hover: #d95316;
+  --light-orange: #fdf2ed;
+  --border-color: #e2e8f0;
+  --text-dark: #0f172a;
+  --text-main: #334155;
+  --text-muted: #64748b;
+  --bg-page: #f8fafc;
+  --card-bg: #ffffff;
+  
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Navbar Header */
+.simple-header {
+  height: 60px;
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--text-dark);
+  cursor: pointer;
+}
+
+.nav-links-row {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-tab-item {
+  background: none;
+  border: none;
+  font-size: 0.925rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-tab-item.active {
+  color: var(--primary-orange);
+  background-color: var(--light-orange);
+}
+
+.nav-tab-item:hover:not(.active) {
+  color: var(--text-dark);
+  background-color: #f1f5f9;
+}
+
+/* Page Layout */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* Clean Cards */
+.simple-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: none;
+  outline: none;
+}
+
+.btn-orange {
+  background-color: var(--primary-orange);
+  color: white;
+}
+
+.btn-orange:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn-light {
+  background-color: #f1f5f9;
+  color: var(--text-dark);
+}
+
+.btn-light:hover {
+  background-color: #e2e8f0;
+}
+
+.btn-outline-orange {
+  background: transparent;
+  color: var(--primary-orange);
+  border: 1px solid var(--primary-orange);
+}
+
+.btn-outline-orange:hover {
+  background-color: var(--light-orange);
+}
+
+/* Status Badges */
+.badge-tag {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.tag-easy { background-color: #d1fae5; color: #065f46; }
+.tag-medium { background-color: #fef3c7; color: #92400e; }
+.tag-hard { background-color: #fee2e2; color: #991b1b; }
+.tag-orange { background-color: var(--light-orange); color: var(--primary-orange); }
+
+/* Progress Bars */
+.progress-bar-track {
+  width: 100%;
+  height: 6px;
+  background-color: #e2e8f0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background-color: var(--primary-orange);
+  border-radius: 3px;
+}
