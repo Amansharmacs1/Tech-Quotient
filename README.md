@@ -37,7 +37,7 @@ An intelligent, modern, web-based platform designed to enhance programming educa
 
 1. **Navigate to the frontend directory**:
    ```bash
-   cd student_Portal/frontend
+   cd frontend
    ```
 
 2. **Install dependencies**:
@@ -55,6 +55,31 @@ An intelligent, modern, web-based platform designed to enhance programming educa
    ```bash
    npm run build
    ```
+
+---
+
+## 📁 Directory Structure
+
+```
+Tech-Quotient/
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── CourseDetailView.jsx
+│   │   │   ├── CodingWorkspace.jsx
+│   │   │   └── Assignments.jsx
+│   │   ├── data/
+│   │   │   └── mockData.js
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── index.css
+│   ├── index.html
+│   ├── package.json
+│   └── vite.config.js
+├── backend/
+└── README.md
+```
 
 ---
 
