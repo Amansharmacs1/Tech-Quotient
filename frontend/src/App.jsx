@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
+import Sidebar from './components/Sidebar';
+import Navbar from './components/Navbar';
 import Dashboard from './components/Dashboard';
 import CourseDetailView from './components/CourseDetailView';
 import CodingWorkspace from './components/CodingWorkspace';
 import Assignments from './components/Assignments';
-import { 
-  Code2, 
-  LayoutDashboard, 
-  BookOpen,
-  FileText 
-} from 'lucide-react';
-import { studentInfo, practiceProblems, enrolledCourses } from './data/mockData';
+import Courses from './components/Courses';
+import Analytics from './components/Analytics';
+import Contests from './components/Contests';
+import Notifications from './components/Notifications';
+import Profile from './components/Profile';
+import { enrolledCourses, practiceProblems } from './data/mockData';
 
 export default function App() {
+  // Global role state: 'student' or 'faculty'
+  const [role, setRole] = useState('student');
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedCourse, setSelectedCourse] = useState(enrolledCourses[0]);
   const [selectedProblem, setSelectedProblem] = useState(practiceProblems[0]);
@@ -22,89 +25,83 @@ export default function App() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-page)' }}>
+    <div className="app-layout">
       
-      {/* Navbar Header */}
-      <header className="simple-header">
-        <div className="brand-logo" onClick={() => setActiveTab('dashboard')}>
-          <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: 'var(--primary-orange)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
-            <Code2 size={18} />
-          </div>
-          <span>Tech<span style={{ color: 'var(--primary-orange)' }}>Quotient</span></span>
-        </div>
+      {/* Left Sidebar */}
+      <Sidebar 
+        role={role} 
+        activeTab={activeTab} 
+        setActiveTab={setActiveTab} 
+      />
 
-        {/* Core Nav Tabs */}
-        <nav className="nav-links-row">
-          <button 
-            onClick={() => setActiveTab('dashboard')} 
-            className={`nav-tab-item ${activeTab === 'dashboard' ? 'active' : ''}`}
-          >
-            <LayoutDashboard size={16} /> Dashboard
-          </button>
+      {/* Main Content Area */}
+      <div className="main-content">
+        
+        {/* Top Navbar Header */}
+        <Navbar 
+          role={role} 
+          setRole={setRole} 
+          activeTab={activeTab} 
+          setActiveTab={setActiveTab} 
+        />
 
-          <button 
-            onClick={() => setActiveTab('course-detail')} 
-            className={`nav-tab-item ${activeTab === 'course-detail' ? 'active' : ''}`}
-          >
-            <BookOpen size={16} /> Course Details
-          </button>
+        {/* Page Container */}
+        <main className="page-container">
+          {activeTab === 'dashboard' && (
+            <Dashboard 
+              role={role}
+              setActiveTab={setActiveTab} 
+              onSelectCourse={handleOpenCourseDetail}
+              onSelectProblem={setSelectedProblem} 
+            />
+          )}
 
-          <button 
-            onClick={() => setActiveTab('coding-workspace')} 
-            className={`nav-tab-item ${activeTab === 'coding-workspace' ? 'active' : ''}`}
-          >
-            <Code2 size={16} /> Practice Workspace
-          </button>
+          {activeTab === 'courses' && (
+            <Courses 
+              role={role}
+              onSelectCourse={handleOpenCourseDetail} 
+            />
+          )}
 
-          <button 
-            onClick={() => setActiveTab('assignments')} 
-            className={`nav-tab-item ${activeTab === 'assignments' ? 'active' : ''}`}
-          >
-            <FileText size={16} /> Assignments
-          </button>
-        </nav>
+          {activeTab === 'course-detail' && (
+            <CourseDetailView 
+              role={role}
+              currentCourse={selectedCourse} 
+              onBack={() => setActiveTab('dashboard')}
+              onOpenAssignments={() => setActiveTab('assignments')}
+            />
+          )}
 
-        {/* Student Avatar */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-          <div style={{ textAlign: 'right', fontSize: '0.775rem' }}>
-            <div style={{ fontWeight: 700, color: 'var(--text-dark)' }}>{studentInfo.name}</div>
-            <div style={{ color: 'var(--text-muted)' }}>Roll: {studentInfo.rollNo}</div>
-          </div>
-          <div style={{ width: '34px', height: '34px', borderRadius: '50%', backgroundColor: 'var(--primary-orange)', color: 'white', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem' }}>
-            AG
-          </div>
-        </div>
-      </header>
+          {activeTab === 'coding-workspace' && (
+            <CodingWorkspace 
+              role={role}
+              selectedProblem={selectedProblem} 
+              onSelectProblem={setSelectedProblem} 
+            />
+          )}
 
-      {/* Main View Container */}
-      <main className="container">
-        {activeTab === 'dashboard' && (
-          <Dashboard 
-            setActiveTab={setActiveTab} 
-            onSelectCourse={handleOpenCourseDetail}
-            onSelectProblem={setSelectedProblem} 
-          />
-        )}
+          {activeTab === 'assignments' && (
+            <Assignments role={role} />
+          )}
 
-        {activeTab === 'course-detail' && (
-          <CourseDetailView 
-            currentCourse={selectedCourse} 
-            onBack={() => setActiveTab('dashboard')}
-            onOpenAssignments={() => setActiveTab('assignments')}
-          />
-        )}
+          {activeTab === 'analytics' && (
+            <Analytics role={role} />
+          )}
 
-        {activeTab === 'coding-workspace' && (
-          <CodingWorkspace 
-            selectedProblem={selectedProblem} 
-            onSelectProblem={setSelectedProblem} 
-          />
-        )}
+          {activeTab === 'contests' && (
+            <Contests role={role} />
+          )}
 
-        {activeTab === 'assignments' && (
-          <Assignments />
-        )}
-      </main>
+          {activeTab === 'notifications' && (
+            <Notifications role={role} />
+          )}
+
+          {activeTab === 'settings' && (
+            <Profile role={role} />
+          )}
+        </main>
+
+      </div>
 
     </div>
   );

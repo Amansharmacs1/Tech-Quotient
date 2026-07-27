@@ -1,3 +1,14 @@
+export const facultyInfo = {
+  name: "Prof. Doe",
+  title: "Professor & Head of CSE Dept",
+  department: "Computer Science & Engineering",
+  institution: "Chitkara University",
+  totalStudents: 250,
+  activeAssignments: 32,
+  problemsCreated: 150,
+  averageScore: "82%"
+};
+
 export const studentInfo = {
   name: "Ansh Goyal",
   rollNo: "2411981092",
@@ -7,7 +18,10 @@ export const studentInfo = {
   problemsSolved: 142,
   totalProblems: 250,
   accuracy: "88.5%",
-  streak: 14
+  streak: 14,
+  activeAssignmentsCount: 3,
+  enrolledCoursesCount: 3,
+  globalRank: 12
 };
 
 export const enrolledCourses = [
@@ -17,7 +31,8 @@ export const enrolledCourses = [
     title: "Data Structures & Algorithms",
     instructor: "Dr. Sandeep Rana",
     progress: 78,
-    sections: 13
+    sections: 13,
+    studentsCount: 120
   },
   {
     id: "cse-302",
@@ -25,7 +40,8 @@ export const enrolledCourses = [
     title: "Full Stack Web Development",
     instructor: "Prof. Anuj Kapoor",
     progress: 85,
-    sections: 8
+    sections: 8,
+    studentsCount: 95
   },
   {
     id: "cse-204",
@@ -33,7 +49,8 @@ export const enrolledCourses = [
     title: "Object-Oriented Programming in Java",
     instructor: "Dr. Sandeep Rana",
     progress: 92,
-    sections: 11
+    sections: 11,
+    studentsCount: 110
   }
 ];
 
@@ -44,11 +61,13 @@ export const practiceProblems = [
     difficulty: "Easy",
     category: "Arrays & Hashing",
     points: 20,
+    solvedCount: 230,
+    accuracy: "92%",
     description: "Given an array of integers `nums` and an integer `target`, return indices of the two numbers such that they add up to `target`.",
     inputFormat: "First line contains N and Target. Second line contains N space-separated integers.",
     outputFormat: "Print indices of the two numbers.",
     starterCode: {
-      java: `import java.util.*;\n\npublic className Solution {\n    public static int[] twoSum(int[] nums, int target) {\n        Map<Integer, Integer> map = new HashMap<>();\n        for (int i = 0; i < nums.length; i++) {\n            int complement = target - nums[i];\n            if (map.containsKey(complement)) {\n                return new int[] { map.get(complement), i };\n            }\n            map.put(nums[i], i);\n        }\n        return new int[] {};\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        int target = sc.nextInt();\n        int[] nums = new int[n];\n        for (int i = 0; i < n; i++) nums[i] = sc.nextInt();\n        int[] result = twoSum(nums, target);\n        if (result.length == 2) {\n            System.out.println(result[0] + " " + result[1]);\n        }\n    }\n}`,
+      java: `import java.util.*;\n\npublic class Solution {\n    public static int[] twoSum(int[] nums, int target) {\n        Map<Integer, Integer> map = new HashMap<>();\n        for (int i = 0; i < nums.length; i++) {\n            int complement = target - nums[i];\n            if (map.containsKey(complement)) {\n                return new int[] { map.get(complement), i };\n            }\n            map.put(nums[i], i);\n        }\n        return new int[] {};\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        int target = sc.nextInt();\n        int[] nums = new int[n];\n        for (int i = 0; i < n; i++) nums[i] = sc.nextInt();\n        int[] result = twoSum(nums, target);\n        if (result.length == 2) {\n            System.out.println(result[0] + " " + result[1]);\n        }\n    }\n}`,
       cpp: `#include <iostream>\n#include <vector>\n#include <unordered_map>\nusing namespace std;\n\nint main() {\n    int n, target;\n    if (!(cin >> n >> target)) return 0;\n    vector<int> nums(n);\n    for(int i=0; i<n; i++) cin >> nums[i];\n    \n    unordered_map<int, int> mp;\n    for(int i=0; i<n; i++) {\n        int comp = target - nums[i];\n        if(mp.count(comp)) {\n            cout << mp[comp] << " " << i << endl;\n            return 0;\n        }\n        mp[nums[i]] = i;\n    }\n    return 0;\n}`,
       python: `nums = list(map(int, input().split()))\ntarget = int(input())\nmp = {}\nfor i, num in enumerate(nums):\n    comp = target - num\n    if comp in mp:\n        print(f"{mp[comp]} {i}")\n        break\n    mp[num] = i`,
       javascript: `function twoSum(nums, target) {\n    const map = new Map();\n    for (let i = 0; i < nums.length; i++) {\n        const comp = target - nums[i];\n        if (map.has(comp)) return [map.get(comp), i];\n        map.set(nums[i], i);\n    }\n    return [];\n}\nconsole.log(twoSum([2, 7, 11, 15], 9).join(" "));`
@@ -60,27 +79,30 @@ export const practiceProblems = [
     difficulty: "Easy",
     category: "Stacks & Queues",
     points: 20,
+    solvedCount: 198,
+    accuracy: "86%",
     description: "Given a string `s` containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.",
     inputFormat: "Single line containing string S.",
     outputFormat: "Print 'true' or 'false'.",
     starterCode: {
-      java: `import java.util.*;\n\npublic className Solution {\n    public static boolean isValid(String s) {\n        Stack<Character> stack = new Stack<>();\n        for (char c : s.toCharArray()) {\n            if (c == '(' || c == '{' || c == '[') {\n                stack.push(c);\n            } else {\n                if (stack.isEmpty()) return false;\n                char top = stack.pop();\n                if ((c == ')' && top != '(') || (c == '}' && top != '{') || (c == ']' && top != '[')) {\n                    return false;\n                }\n            }\n        }\n        return stack.isEmpty();\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (sc.hasNext()) {\n            String s = sc.next();\n            System.out.println(isValid(s) ? "true" : "false");\n        }\n    }\n}`,
+      java: `import java.util.*;\n\npublic class Solution {\n    public static boolean isValid(String s) {\n        Stack<Character> stack = new Stack<>();\n        for (char c : s.toCharArray()) {\n            if (c == '(' || c == '{' || c == '[') {\n                stack.push(c);\n            } else {\n                if (stack.isEmpty()) return false;\n                char top = stack.pop();\n                if ((c == ')' && top != '(') || (c == '}' && top != '{') || (c == ']' && top != '[')) {\n                    return false;\n                }\n            }\n        }\n        return stack.isEmpty();\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (sc.hasNext()) {\n            String s = sc.next();\n            System.out.println(isValid(s) ? "true" : "false");\n        }\n    }\n}`,
       cpp: `#include <iostream>\n#include <stack>\nusing namespace std;\n\nint main() {\n    string s;\n    if(cin >> s) cout << "true" << endl;\n    return 0;\n}`,
       python: `s = input().strip()\nprint("true")`
     }
   },
   {
     id: "prob-3",
-    title: "Longest Substring Without Repeating Characters",
+    title: "0/1 Knapsack Dynamic Programming",
     difficulty: "Medium",
-    category: "Sliding Window",
+    category: "DP & Recursion",
     points: 40,
-    description: "Given a string `s`, find the length of the longest substring without repeating characters.",
-    inputFormat: "Single line containing string S.",
-    outputFormat: "Print maximum length.",
+    solvedCount: 115,
+    accuracy: "42%",
+    description: "Given weights and values of N items, put these items in a knapsack of capacity W to get the maximum total value in the knapsack.",
+    inputFormat: "N and W on first line. Next line N values. Next line N weights.",
+    outputFormat: "Print maximum total value.",
     starterCode: {
-      java: `import java.util.*;\n\npublic className Solution {\n    public static int lengthOfLongestSubstring(String s) {\n        Set<Character> set = new HashSet<>();\n        int left = 0, maxLen = 0;\n        for (int right = 0; right < s.length(); right++) {\n            while (set.contains(s.charAt(right))) {\n                set.remove(s.charAt(left));\n                left++;\n            }\n            set.add(s.charAt(right));\n            maxLen = Math.max(maxLen, right - left + 1);\n        }\n        return maxLen;\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (sc.hasNext()) {\n            System.out.println(lengthOfLongestSubstring(sc.next()));\n        }\n    }\n}`,
-      cpp: `#include <iostream>\nusing namespace std;\nint main() {\n    string s;\n    if(cin >> s) cout << 3 << endl;\n    return 0;\n}`
+      java: `public class Solution {\n    public static int knapsack(int W, int[] wt, int[] val, int n) {\n        int[][] dp = new int[n + 1][W + 1];\n        for (int i = 0; i <= n; i++) {\n            for (int w = 0; w <= W; w++) {\n                if (i == 0 || w == 0) dp[i][w] = 0;\n                else if (wt[i - 1] <= w)\n                    dp[i][w] = Math.max(val[i - 1] + dp[i - 1][w - wt[i - 1]], dp[i - 1][w]);\n                else dp[i][w] = dp[i - 1][w];\n            }\n        }\n        return dp[n][W];\n    }\n}`
     }
   }
 ];
@@ -93,7 +115,8 @@ export const studentAssignments = [
     title: "Assignment 4: Binary Search Trees & AVL Balancing",
     dueDate: "2026-07-30",
     maxScore: 100,
-    status: "Pending"
+    status: "Pending",
+    submissionCount: 185
   },
   {
     id: "asgn-2",
@@ -103,7 +126,8 @@ export const studentAssignments = [
     dueDate: "2026-07-24",
     maxScore: 100,
     status: "Submitted",
-    score: 95
+    score: 95,
+    submissionCount: 242
   },
   {
     id: "asgn-3",
@@ -112,6 +136,105 @@ export const studentAssignments = [
     title: "Assignment 2: RESTful API & React Integration",
     dueDate: "2026-08-05",
     maxScore: 100,
-    status: "In Progress"
+    status: "In Progress",
+    submissionCount: 140
   }
 ];
+
+// Topic performance breakdown for Bar Chart
+export const topicPerformanceData = {
+  faculty: [
+    { topic: "Arrays", count: 80, label: "80 problems solved" },
+    { topic: "Strings", count: 65, label: "65 problems solved" },
+    { topic: "Trees", count: 45, label: "45 problems solved" },
+    { topic: "Graphs", count: 35, label: "35 problems solved" },
+    { topic: "DP", count: 30, label: "30 problems solved" }
+  ],
+  student: [
+    { topic: "Arrays", count: 45, label: "45 solved (92% acc)" },
+    { topic: "Strings", count: 38, label: "38 solved (88% acc)" },
+    { topic: "Trees", count: 28, label: "28 solved (75% acc)" },
+    { topic: "Graphs", count: 19, label: "19 solved (68% acc)" },
+    { topic: "DP", count: 12, label: "12 solved (42% acc)" }
+  ]
+};
+
+// Submission accuracy trend data for Line Chart
+export const accuracyTrendData = {
+  faculty: [
+    { week: "Week 1", value: 70 },
+    { week: "Week 2", value: 75 },
+    { week: "Week 3", value: 82 },
+    { week: "Week 4", value: 88 }
+  ],
+  student: [
+    { week: "Week 1", value: 75 },
+    { week: "Week 2", value: 80 },
+    { week: "Week 3", value: 84 },
+    { week: "Week 4", value: 88.5 }
+  ]
+};
+
+// AI Insights tailored per role
+export const aiInsightData = {
+  faculty: {
+    highlight: "Students are struggling with Dynamic Programming.",
+    recommendation: "Create more DP practice problems.",
+    actionText: "Take Action →",
+    actionTarget: "assignments"
+  },
+  student: {
+    highlight: "Your Dynamic Programming accuracy is 42% (below target).",
+    recommendation: "Solve '0/1 Knapsack' and 'Coin Change' to boost your score.",
+    actionText: "Practice DP Now →",
+    actionTarget: "coding-workspace"
+  }
+};
+
+// Recent activities feed tailored per role
+export const recentActivitiesData = {
+  faculty: [
+    { id: 1, text: "Aarav Sharma submitted CSE201 Assignment 4", time: "10 mins ago", type: "submission" },
+    { id: 2, text: "Priya Patel completed Two Sum Target Pair", time: "25 mins ago", type: "solved" },
+    { id: 3, text: "Automated test cases added to DP Knapsack", time: "2 hours ago", type: "system" },
+    { id: 4, text: "Rohan Verma requested hint on Graph BFS", time: "3 hours ago", type: "help" }
+  ],
+  student: [
+    { id: 1, text: "Solved Two Sum Target Pair (+20 pts)", time: "15 mins ago", type: "solved" },
+    { id: 2, text: "Submitted Java Polymorphism Assignment 3 (Score: 95/100)", time: "Yesterday", type: "submission" },
+    { id: 3, text: "Unlocked Badge: Array Master 🔥", time: "2 days ago", type: "badge" },
+    { id: 4, text: "CSE302 Assignment 2 announced by Prof. Kapoor", time: "3 days ago", type: "announcement" }
+  ]
+};
+
+export const notificationsData = [
+  { id: 1, title: "New Assignment Posted", message: "CSE201 Assignment 4 is now live.", time: "10m ago", unread: true },
+  { id: 2, title: "Judge0 Testcases Passed", message: "Solution for Two Sum Target Pair accepted.", time: "1h ago", unread: false },
+  { id: 3, title: "Contest Announcement", message: "Weekly Algo Clash starts tomorrow at 6 PM.", time: "3h ago", unread: true }
+];
+
+// Alias exports for compatibility
+export const coursesData = enrolledCourses.map(c => ({
+  ...c,
+  modules: [
+    { name: "Module 1: Foundations & Memory Layout", completed: true },
+    { name: "Module 2: Arrays, Stacks & Queues", completed: true },
+    { name: "Module 3: Binary Trees & Heaps", current: true },
+    { name: "Module 4: Dynamic Programming", completed: false }
+  ]
+}));
+
+export const contestsData = [
+  { id: "c-1", title: "TechQuotient Algo Clash #14", status: "Live", participants: 142, duration: "2 Hours" },
+  { id: "c-2", title: "Speed Coding Sprint", status: "Upcoming", participants: 88, duration: "1.5 Hours" }
+];
+
+export const studentProfile = {
+  ...studentInfo,
+  streakDays: studentInfo.streak,
+  rank: studentInfo.globalRank,
+  avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+  email: "ansh.goyal@chitkara.edu.in"
+};
+
+
