@@ -8,7 +8,9 @@ import {
   Trophy, 
   LineChart, 
   Bell, 
-  Settings 
+  Settings,
+  Users,
+  Inbox
 } from 'lucide-react';
 
 const navItems = [
@@ -16,6 +18,8 @@ const navItems = [
   { name: 'Courses', path: '/courses', icon: BookOpen },
   { name: 'Coding Problems', path: '/problems', icon: Code2 },
   { name: 'Assignments', path: '/assignments', icon: FileText },
+  { name: 'Students', path: '/students', icon: Users },
+  { name: 'Submissions', path: '/submissions', icon: Inbox },
   { name: 'Contests', path: '/contests', icon: Trophy },
   { name: 'Analytics', path: '/analytics', icon: LineChart },
   { name: 'Announcements', path: '/announcements', icon: Bell },

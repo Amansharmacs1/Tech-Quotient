@@ -2,7 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './layout/Layout';
 import Dashboard from './pages/Dashboard';
-import { Analytics, Profile } from './pages/Stubs';
+import { Profile } from './pages/Stubs';
 
 import Courses from './pages/Courses/Courses';
 import CreateCourse from './pages/Courses/CreateCourse';
@@ -19,6 +19,12 @@ import CreateAssignment from './pages/Assignments/CreateAssignment';
 import EditAssignment from './pages/Assignments/EditAssignment';
 import AssignmentDetails from './pages/Assignments/AssignmentDetails';
 import AssignmentSubmissions from './pages/Assignments/AssignmentSubmissions';
+
+import Students from './pages/Students/Students';
+import StudentDetails from './pages/Students/StudentDetails';
+import Submissions from './pages/Students/Submissions';
+import SubmissionDetails from './pages/Students/SubmissionDetails';
+import Performance from './pages/Students/Performance';
 function App() {
   return (
     <Routes>
@@ -50,7 +56,20 @@ function App() {
           <Route path=":id/submissions" element={<AssignmentSubmissions />} />
         </Route>
         <Route path="contests" element={<Courses />} />
-        <Route path="analytics" element={<Analytics />} />
+        {/* Student Module Routes */}
+        <Route path="students">
+          <Route index element={<Students />} />
+          <Route path=":id" element={<StudentDetails />} />
+        </Route>
+
+        {/* Submissions Module Routes */}
+        <Route path="submissions">
+          <Route index element={<Submissions />} />
+          <Route path=":id" element={<SubmissionDetails />} />
+        </Route>
+
+        <Route path="analytics" element={<Performance />} />
+        <Route path="performance" element={<Performance />} />
         <Route path="announcements" element={<Courses />} />
         <Route path="settings" element={<Profile />} />
       </Route>
