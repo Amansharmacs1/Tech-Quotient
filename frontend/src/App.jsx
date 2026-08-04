@@ -24,7 +24,12 @@ import Students from './pages/Students/Students';
 import StudentDetails from './pages/Students/StudentDetails';
 import Submissions from './pages/Students/Submissions';
 import SubmissionDetails from './pages/Students/SubmissionDetails';
-import Performance from './pages/Students/Performance';
+
+import Analytics from './pages/Analytics/Analytics';
+import CourseAnalytics from './pages/Analytics/CourseAnalytics';
+import StudentAnalytics from './pages/Analytics/StudentAnalytics';
+import AssignmentAnalytics from './pages/Analytics/AssignmentAnalytics';
+import Reports from './pages/Analytics/Reports';
 function App() {
   return (
     <Routes>
@@ -68,8 +73,15 @@ function App() {
           <Route path=":id" element={<SubmissionDetails />} />
         </Route>
 
-        <Route path="analytics" element={<Performance />} />
-        <Route path="performance" element={<Performance />} />
+        {/* Analytics & Reports Module Routes */}
+        <Route path="analytics">
+          <Route index element={<Analytics />} />
+          <Route path="course" element={<CourseAnalytics />} />
+          <Route path="student" element={<StudentAnalytics />} />
+          <Route path="assignment" element={<AssignmentAnalytics />} />
+        </Route>
+        
+        <Route path="reports" element={<Reports />} />
         <Route path="announcements" element={<Courses />} />
         <Route path="settings" element={<Profile />} />
       </Route>

@@ -10,7 +10,8 @@ import {
   Bell, 
   Settings,
   Users,
-  Inbox
+  Inbox,
+  FileBarChart
 } from 'lucide-react';
 
 const navItems = [
@@ -22,6 +23,7 @@ const navItems = [
   { name: 'Submissions', path: '/submissions', icon: Inbox },
   { name: 'Contests', path: '/contests', icon: Trophy },
   { name: 'Analytics', path: '/analytics', icon: LineChart },
+  { name: 'Reports', path: '/reports', icon: FileBarChart },
   { name: 'Announcements', path: '/announcements', icon: Bell },
   { name: 'Settings', path: '/settings', icon: Settings },
 ];
