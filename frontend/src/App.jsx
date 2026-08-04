@@ -30,6 +30,13 @@ import CourseAnalytics from './pages/Analytics/CourseAnalytics';
 import StudentAnalytics from './pages/Analytics/StudentAnalytics';
 import AssignmentAnalytics from './pages/Analytics/AssignmentAnalytics';
 import Reports from './pages/Analytics/Reports';
+
+import AIHome from './pages/AI/AIHome';
+import ProblemGenerator from './pages/AI/ProblemGenerator';
+import AssignmentGenerator from './pages/AI/AssignmentGenerator';
+import StudentInsights from './pages/AI/StudentInsights';
+import TeachingAssistant from './pages/AI/TeachingAssistant';
+import AIHistory from './pages/AI/AIHistory';
 function App() {
   return (
     <Routes>
@@ -82,6 +89,17 @@ function App() {
         </Route>
         
         <Route path="reports" element={<Reports />} />
+        
+        {/* AI Workspace Routes */}
+        <Route path="ai">
+          <Route index element={<AIHome />} />
+          <Route path="problem-generator" element={<ProblemGenerator />} />
+          <Route path="assignment-generator" element={<AssignmentGenerator />} />
+          <Route path="student-insights" element={<StudentInsights />} />
+          <Route path="assistant" element={<TeachingAssistant />} />
+          <Route path="history" element={<AIHistory />} />
+        </Route>
+
         <Route path="announcements" element={<Courses />} />
         <Route path="settings" element={<Profile />} />
       </Route>
