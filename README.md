@@ -1,45 +1,61 @@
-# TechQuotient - Faculty Portal
+# TechQuotient Faculty Portal
 
-Welcome to the Faculty Portal module of **TechQuotient**! 
+TechQuotient is an advanced, AI-powered educational platform designed specifically for computer science faculty to manage courses, assignments, student performance, and coding problems. 
 
-This module is designed to empower educators with AI-driven tools, automate administrative tasks, and most importantly, identify students who need help before they fall behind.
+This repository contains the **Faculty Portal** interface, which transforms traditional course management into a data-driven, automated teaching experience.
 
-## 🚀 Core Features
+## 🚀 Features
 
-1. **Predictive At-Risk Dashboard (USP)**
-   - Identifies students who are likely to struggle academically based on coding performance, assignment scores, engagement, and consistency.
-   - Allows for early intervention and personalized guidance.
+The Faculty Portal is divided into several core modules:
 
-2. **Class Analytics & Insights**
-   - Aggregate statistics on class performance.
-   - Real-time engagement metrics during active sessions.
-   - Topic-wise difficulty analysis.
+*   **📊 Dashboard:** A high-level overview of active courses, recent submissions, and quick actions.
+*   **📚 Course Management:** Create, edit, and manage computer science courses (e.g., Data Structures, Algorithms).
+*   **💻 Coding Problems:** A robust problem bank where faculty can create coding challenges with specific test cases, constraints, and sample I/O.
+*   **📝 Assignment Management:** Group coding problems into structured assignments with assigned marks and difficulty levels.
+*   **👥 Student & Submission Management:** Track student progress, view a live feed of code submissions, and use the built-in IDE-style CodeViewer for code reviews.
+*   **📈 Analytics & Reports:** A comprehensive, Recharts-powered data suite offering deep dives into course engagement, topic-wise success rates, and student leaderboards.
+*   **✨ AI Teaching Assistant:** An intelligent workspace featuring:
+    *   **AI Problem & Assignment Generators:** Instantly generate coding content mapped to learning objectives.
+    *   **Student Insights:** AI-driven analysis identifying at-risk topics.
+    *   **Chat Assistant:** A conversational UI for brainstorming and teaching support.
 
-3. **AI Assignment & Assessment Generator**
-   - Automatically generate custom coding assignments and Weekly MCQ quizzes using AI.
+## 🛠 Tech Stack
 
-4. **Faculty Copilot**
-   - Generate sample code and optimal solutions.
-   - Create step-by-step "Dry Run" explanations.
-   - Generate public and hidden test cases for assignments.
+**Frontend:**
+*   React.js
+*   Vite
+*   Tailwind CSS v3
+*   React Router DOM
+*   Framer Motion (Animations)
+*   Recharts (Data Visualization)
+*   Lucide React (Icons)
 
-5. **Administrative Tools**
-   - **Plagiarism Detection:** Highlight code similarity across student submissions.
-   - **Unbiased Doubt Resolution:** A queue for unresolved student doubts, anonymizing the student's identity (showing only class/section) to prevent bias.
+**Backend (Prepared):**
+*   Node.js
+*   Express
+*   MongoDB (Mongoose)
 
-## 🛠 Tech Stack (Proposed)
+## ⚙️ Getting Started
 
-* **Frontend:** React / Next.js
-* **Styling:** Tailwind CSS / Vanilla CSS
-* **Charts/Analytics:** Chart.js / Recharts
-* **Backend Integration:** RESTful APIs / GraphQL
+To run the project locally, you need to start both the frontend and backend servers.
 
-## 📂 Next Steps for Development
+### 1. Start the Backend
+```bash
+cd backend
+npm install
+npm run dev
+```
+*(Runs on http://localhost:5001)*
 
-- [ ] Initialize the React application structure.
-- [ ] Define the routing for the dashboard, student profiles, and assignment generator.
-- [ ] Create mock data for the Predictive At-Risk Dashboard to begin UI development.
-- [ ] Implement the Faculty Copilot chat interface.
+### 2. Start the Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
+*(Runs on http://localhost:5173)*
 
----
-*Built as part of the TechQuotient educational platform.*
+Open your browser and navigate to `http://localhost:5173` to access the portal.
+
+## 🎨 Design System
+The portal utilizes a clean, modern SaaS design with a heavy focus on white space, soft shadows, and a professional primary color scheme (`#FF8C42` orange). It is fully responsive across desktop and tablet views.
