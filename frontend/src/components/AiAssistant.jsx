@@ -13,6 +13,7 @@ import {
   MessageSquare
 } from 'lucide-react';
 import { studentProfile } from '../data/mockData';
+import { sendAiQueryApi } from '../services/api';
 
 export default function AiAssistant({ setActiveTab }) {
   const [messages, setMessages] = useState([
@@ -36,7 +37,7 @@ export default function AiAssistant({ setActiveTab }) {
     { title: "Recursion vs Iteration", icon: Code2, prompt: "Compare call stack depth overhead between recursion and iteration in Python." }
   ];
 
-  const handleSendMessage = (textToSend = null) => {
+  const handleSendMessage = async (textToSend = null) => {
     const query = textToSend || inputMessage;
     if (!query.trim()) return;
 
@@ -51,30 +52,38 @@ export default function AiAssistant({ setActiveTab }) {
     if (!textToSend) setInputMessage('');
     setIsTyping(true);
 
-    // Simulated Intelligent AI Response
-    setTimeout(() => {
-      let botResponse = {
+    const apiRes = await sendAiQueryApi(query, null);
+
+    if (apiRes && apiRes.text) {
+      setMessages(prev => [...prev, {
         id: Date.now() + 1,
         sender: 'bot',
-        text: '',
-        code: null,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
+        text: apiRes.text,
+        code: apiRes.code,
+        time: apiRes.time || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }]);
+    } else {
+      setTimeout(() => {
+        let botResponse = {
+          id: Date.now() + 1,
+          sender: 'bot',
+          text: '',
+          code: null,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
 
-      if (query.toLowerCase().includes('avl') || query.toLowerCase().includes('rotation')) {
-        botResponse.text = "In AVL Trees, balance factors can become +2 or -2 after insertion. We perform single or double rotations to restore the height balance:";
-        botResponse.code = `// Left-Left (LL) Single Right Rotation Example in C++\nNode* rightRotate(Node* y) {\n    Node* x = y->left;\n    Node* T2 = x->right;\n    // Perform rotation\n    x->right = y;\n    y->left = T2;\n    // Update heights\n    y->height = max(height(y->left), height(y->right)) + 1;\n    x->height = max(height(x->left), height(x->right)) + 1;\n    return x; // New root\n}`;
-      } else if (query.toLowerCase().includes('memory') || query.toLowerCase().includes('leak')) {
-        botResponse.text = "To avoid memory leaks in C++, always pair dynamic `new` calls with corresponding `delete` calls, or use modern RAII smart pointers (`std::unique_ptr`):";
-        botResponse.code = `#include <memory>\n// Recommended Modern C++ RAII approach\nvoid safeAllocation() {\n    std::unique_ptr<int[]> arr = std::make_unique<int[]>(100);\n    // Automatically deallocated when out of scope!\n}`;
-      } else {
-        botResponse.text = `Great query regarding "${query}"! Based on your TechQuotient performance history, here is the recommended optimal pattern:`;
-        botResponse.code = `// Optimized O(N) Hash Map Lookup Pattern\nstd::unordered_map<int, int> lookup;\nfor (int i = 0; i < n; ++i) {\n    // O(1) average constant time check\n    if (lookup.find(target - nums[i]) != lookup.end()) {\n        return {lookup[target - nums[i]], i};\n    }\n    lookup[nums[i]] = i;\n}`;
-      }
+        if (query.toLowerCase().includes('avl') || query.toLowerCase().includes('rotation')) {
+          botResponse.text = "In AVL Trees, balance factors can become +2 or -2 after insertion. We perform single or double rotations to restore the height balance:";
+          botResponse.code = `// Left-Left (LL) Single Right Rotation Example in C++\nNode* rightRotate(Node* y) {\n    Node* x = y->left;\n    Node* T2 = x->right;\n    // Perform rotation\n    x->right = y;\n    y->left = T2;\n    // Update heights\n    y->height = max(height(y->left), height(y->right)) + 1;\n    x->height = max(height(x->left), height(x->right)) + 1;\n    return x; // New root\n}`;
+        } else {
+          botResponse.text = `Great query regarding "${query}"! Based on your TechQuotient performance history, here is the recommended optimal pattern:`;
+          botResponse.code = `// Optimized O(N) Hash Map Lookup Pattern\nstd::unordered_map<int, int> lookup;\nfor (int i = 0; i < n; ++i) {\n    if (lookup.find(target - nums[i]) != lookup.end()) return {lookup[target - nums[i]], i};\n    lookup[nums[i]] = i;\n}`;
+        }
 
-      setMessages(prev => [...prev, botResponse]);
-      setIsTyping(false);
-    }, 1000);
+        setMessages(prev => [...prev, botResponse]);
+      }, 700);
+    }
+    setIsTyping(false);
   };
 
   const handleCopyCode = (id, codeText) => {
@@ -102,7 +111,7 @@ export default function AiAssistant({ setActiveTab }) {
           </div>
         </div>
 
-        <button onClick={() => setActiveTab('coding-workspace')} className="btn btn-outline btn-sm">
+        <button onClick={() => setActiveTab && setActiveTab('coding-workspace')} className="btn btn-outline btn-sm">
           <Code2 size={16} /> Open Editor Workspace
         </button>
       </div>
@@ -220,7 +229,7 @@ export default function AiAssistant({ setActiveTab }) {
 
           {isTyping && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-              <Bot size={18} color="#8b5cf6" /> TechBot is generating code explanation...
+              <Bot size={18} color="#8b5cf6" /> TechBot is generating response...
             </div>
           )}
         </div>

@@ -87,7 +87,8 @@ export const practiceProblems = [
     starterCode: {
       java: `import java.util.*;\n\npublic class Solution {\n    public static boolean isValid(String s) {\n        Stack<Character> stack = new Stack<>();\n        for (char c : s.toCharArray()) {\n            if (c == '(' || c == '{' || c == '[') {\n                stack.push(c);\n            } else {\n                if (stack.isEmpty()) return false;\n                char top = stack.pop();\n                if ((c == ')' && top != '(') || (c == '}' && top != '{') || (c == ']' && top != '[')) {\n                    return false;\n                }\n            }\n        }\n        return stack.isEmpty();\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if (sc.hasNext()) {\n            String s = sc.next();\n            System.out.println(isValid(s) ? "true" : "false");\n        }\n    }\n}`,
       cpp: `#include <iostream>\n#include <stack>\nusing namespace std;\n\nint main() {\n    string s;\n    if(cin >> s) cout << "true" << endl;\n    return 0;\n}`,
-      python: `s = input().strip()\nprint("true")`
+      python: `s = input().strip()\nprint("true")`,
+      javascript: `console.log("true");`
     }
   },
   {
@@ -102,7 +103,10 @@ export const practiceProblems = [
     inputFormat: "N and W on first line. Next line N values. Next line N weights.",
     outputFormat: "Print maximum total value.",
     starterCode: {
-      java: `public class Solution {\n    public static int knapsack(int W, int[] wt, int[] val, int n) {\n        int[][] dp = new int[n + 1][W + 1];\n        for (int i = 0; i <= n; i++) {\n            for (int w = 0; w <= W; w++) {\n                if (i == 0 || w == 0) dp[i][w] = 0;\n                else if (wt[i - 1] <= w)\n                    dp[i][w] = Math.max(val[i - 1] + dp[i - 1][w - wt[i - 1]], dp[i - 1][w]);\n                else dp[i][w] = dp[i - 1][w];\n            }\n        }\n        return dp[n][W];\n    }\n}`
+      java: `public class Solution {\n    public static int knapsack(int W, int[] wt, int[] val, int n) {\n        int[][] dp = new int[n + 1][W + 1];\n        for (int i = 0; i <= n; i++) {\n            for (int w = 0; w <= W; w++) {\n                if (i == 0 || w == 0) dp[i][w] = 0;\n                else if (wt[i - 1] <= w)\n                    dp[i][w] = Math.max(val[i - 1] + dp[i - 1][w - wt[i - 1]], dp[i - 1][w]);\n                else dp[i][w] = dp[i - 1][w];\n            }\n        }\n        return dp[n][W];\n    }\n}`,
+      cpp: `#include <iostream>\nusing namespace std;\nint main() { cout << 220; return 0; }`,
+      python: `print(220)`,
+      javascript: `console.log(220);`
     }
   }
 ];
@@ -141,7 +145,6 @@ export const studentAssignments = [
   }
 ];
 
-// Topic performance breakdown for Bar Chart
 export const topicPerformanceData = {
   faculty: [
     { topic: "Arrays", count: 80, label: "80 problems solved" },
@@ -159,7 +162,6 @@ export const topicPerformanceData = {
   ]
 };
 
-// Submission accuracy trend data for Line Chart
 export const accuracyTrendData = {
   faculty: [
     { week: "Week 1", value: 70 },
@@ -175,7 +177,6 @@ export const accuracyTrendData = {
   ]
 };
 
-// AI Insights tailored per role
 export const aiInsightData = {
   faculty: {
     highlight: "Students are struggling with Dynamic Programming.",
@@ -191,7 +192,6 @@ export const aiInsightData = {
   }
 };
 
-// Recent activities feed tailored per role
 export const recentActivitiesData = {
   faculty: [
     { id: 1, text: "Aarav Sharma submitted CSE201 Assignment 4", time: "10 mins ago", type: "submission" },
@@ -208,12 +208,11 @@ export const recentActivitiesData = {
 };
 
 export const notificationsData = [
-  { id: 1, title: "New Assignment Posted", message: "CSE201 Assignment 4 is now live.", time: "10m ago", unread: true },
-  { id: 2, title: "Judge0 Testcases Passed", message: "Solution for Two Sum Target Pair accepted.", time: "1h ago", unread: false },
-  { id: 3, title: "Contest Announcement", message: "Weekly Algo Clash starts tomorrow at 6 PM.", time: "3h ago", unread: true }
+  { id: 1, title: "New Assignment Posted", message: "CSE201 Assignment 4 is now live.", time: "10m ago", type: "assignment", unread: true },
+  { id: 2, title: "Judge0 Testcases Passed", message: "Solution for Two Sum Target Pair accepted.", time: "1h ago", type: "ai", unread: false },
+  { id: 3, title: "Contest Announcement", message: "Weekly Algo Clash starts tomorrow at 6 PM.", time: "3h ago", type: "contest", unread: true }
 ];
 
-// Alias exports for compatibility
 export const coursesData = enrolledCourses.map(c => ({
   ...c,
   modules: [
@@ -225,8 +224,51 @@ export const coursesData = enrolledCourses.map(c => ({
 }));
 
 export const contestsData = [
-  { id: "c-1", title: "TechQuotient Algo Clash #14", status: "Live", participants: 142, duration: "2 Hours" },
-  { id: "c-2", title: "Speed Coding Sprint", status: "Upcoming", participants: 88, duration: "1.5 Hours" }
+  { 
+    id: "c-1", 
+    title: "TechQuotient Algo Clash #14", 
+    status: "Live", 
+    participants: 142, 
+    duration: "2 Hours",
+    questionsCount: 4,
+    startTime: "Started 35m ago",
+    userRank: 12,
+    score: 350,
+    leaderboard: [
+      { rank: 1, name: "Aarav Sharma", score: 400, solved: 4, penalty: "42m" },
+      { rank: 2, name: "Priya Patel", score: 380, solved: 4, penalty: "54m" },
+      { rank: 3, name: "Rohan Verma", score: 360, solved: 4, penalty: "61m" },
+      { rank: 12, name: "Ansh Goyal (You)", score: 350, solved: 3, penalty: "48m" },
+      { rank: 13, name: "Neha Gupta", score: 320, solved: 3, penalty: "55m" }
+    ]
+  },
+  { 
+    id: "c-2", 
+    title: "Speed Coding Sprint #18", 
+    status: "Upcoming", 
+    participants: 88, 
+    duration: "1.5 Hours",
+    questionsCount: 3,
+    startTime: "Tomorrow at 6:00 PM",
+    userRank: null,
+    score: 0,
+    leaderboard: []
+  },
+  {
+    id: "c-3",
+    title: "Summer Code Cup 2026",
+    status: "Completed",
+    participants: 210,
+    duration: "3 Hours",
+    questionsCount: 5,
+    startTime: "Jul 15, 2026",
+    userRank: 8,
+    score: 480,
+    leaderboard: [
+      { rank: 1, name: "Karan Singh", score: 500, solved: 5, penalty: "85m" },
+      { rank: 8, name: "Ansh Goyal (You)", score: 480, solved: 5, penalty: "102m" }
+    ]
+  }
 ];
 
 export const studentProfile = {
@@ -234,7 +276,11 @@ export const studentProfile = {
   streakDays: studentInfo.streak,
   rank: studentInfo.globalRank,
   avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
-  email: "ansh.goyal@chitkara.edu.in"
+  email: "ansh.goyal@chitkara.edu.in",
+  badges: [
+    { title: "Array Master", icon: "🔥", desc: "Solved 40+ Array & Hashing Problems", date: "Jul 2026" },
+    { title: "Streak Warrior", icon: "⚡", desc: "Maintained 14-Day Coding Streak", date: "Jul 2026" },
+    { title: "Java Specialist", icon: "☕", desc: "Passed OOP & Polymorphism Assignment with 95%", date: "Jun 2026" },
+    { title: "Contest Top 5%", icon: "🏆", desc: "Ranked #12 in TechQuotient Algo Clash", date: "Jun 2026" }
+  ]
 };
-
-

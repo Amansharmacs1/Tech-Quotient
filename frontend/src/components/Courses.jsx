@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { coursesData } from '../data/mockData';
 
-export default function Courses() {
+export default function Courses({ onSelectCourse }) {
   return (
     <div className="page-body animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
       <div>
@@ -77,7 +77,11 @@ export default function Courses() {
             </div>
 
             <div style={{ borderTop: '1px solid var(--card-border)', marginTop: '1.5rem', paddingTop: '1rem', display: 'flex', gap: '0.75rem' }}>
-              <button className="btn btn-primary btn-sm" style={{ flex: 1 }}>
+              <button 
+                onClick={() => onSelectCourse && onSelectCourse(course)}
+                className="btn btn-primary btn-sm" 
+                style={{ flex: 1 }}
+              >
                 Open Course Player
               </button>
               <button className="btn btn-outline btn-sm" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>

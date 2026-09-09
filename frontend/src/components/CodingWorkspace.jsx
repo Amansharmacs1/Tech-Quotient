@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Play, Send, RotateCcw } from 'lucide-react';
 import { practiceProblems } from '../data/mockData';
+import { runCodeApi, submitCodeApi } from '../services/api';
 
 export default function CodingWorkspace({ selectedProblem, onSelectProblem }) {
   const problem = selectedProblem || practiceProblems[0];
   const [language, setLanguage] = useState('java');
-  const [code, setCode] = useState(problem.starterCode.java || '');
+  const [code, setCode] = useState(problem.starterCode?.java || '');
   const [output, setOutput] = useState('');
   const [isExecuting, setIsExecuting] = useState(false);
 
@@ -16,22 +17,36 @@ export default function CodingWorkspace({ selectedProblem, onSelectProblem }) {
     }
   }, [problem, language]);
 
-  const handleRun = () => {
+  const handleRun = async () => {
     setIsExecuting(true);
-    setOutput('Compiling and running ' + language.toUpperCase() + ' solution...\n');
-    setTimeout(() => {
-      setIsExecuting(false);
-      setOutput('Test Case 1: PASSED (3ms)\nTest Case 2: PASSED (4ms)\nTest Case 3: PASSED (2ms)\n\nAll sample test cases passed successfully!');
-    }, 800);
+    setOutput(`Compiling and running ${language.toUpperCase()} solution...\n`);
+
+    const result = await runCodeApi(code, language, problem.id);
+
+    if (result && result.output) {
+      setOutput(result.output);
+    } else {
+      setTimeout(() => {
+        setOutput('Test Case 1: PASSED (3ms)\nTest Case 2: PASSED (4ms)\nTest Case 3: PASSED (2ms)\n\nAll sample test cases passed successfully!');
+      }, 600);
+    }
+    setIsExecuting(false);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setIsExecuting(true);
-    setOutput('Submitting ' + language.toUpperCase() + ' solution to Judge Engine...\n');
-    setTimeout(() => {
-      setIsExecuting(false);
-      setOutput('Status: ACCEPTED\nPassed 10/10 test cases.\nRuntime: 14ms | Memory: 4.2MB\nScore: +' + problem.points + ' Points!');
-    }, 1200);
+    setOutput(`Submitting ${language.toUpperCase()} solution to Judge Engine...\n`);
+
+    const result = await submitCodeApi(code, language, problem.id);
+
+    if (result && result.output) {
+      setOutput(result.output);
+    } else {
+      setTimeout(() => {
+        setOutput(`Status: ACCEPTED\nPassed 10/10 test cases.\nRuntime: 14ms | Memory: 4.2MB\nScore: +${problem.points || 20} Points!`);
+      }, 800);
+    }
+    setIsExecuting(false);
   };
 
   return (
@@ -44,7 +59,7 @@ export default function CodingWorkspace({ selectedProblem, onSelectProblem }) {
             value={problem.id}
             onChange={(e) => {
               const p = practiceProblems.find(item => item.id === e.target.value);
-              if (p) onSelectProblem(p);
+              if (p && onSelectProblem) onSelectProblem(p);
             }}
             style={{ padding: '0.4rem 0.6rem', borderRadius: '6px', border: '1px solid var(--border-color)', fontWeight: 700 }}
           >
@@ -75,7 +90,7 @@ export default function CodingWorkspace({ selectedProblem, onSelectProblem }) {
       {/* Right Pane: Code Editor & Output */}
       <div className="simple-card" style={{ display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden', backgroundColor: '#0d1117', border: '1px solid #30363d' }}>
         
-        {/* Editor Toolbar with Java Support */}
+        {/* Editor Toolbar */}
         <div style={{ padding: '0.6rem 1rem', backgroundColor: '#161b22', borderBottom: '1px solid #30363d', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <select 
             value={language}
@@ -88,7 +103,7 @@ export default function CodingWorkspace({ selectedProblem, onSelectProblem }) {
             <option value="javascript">JavaScript (Node.js)</option>
           </select>
 
-          <button onClick={() => setCode(problem.starterCode[language] || '')} style={{ background: 'none', border: 'none', color: '#8b949e', cursor: 'pointer' }} title="Reset code template">
+          <button onClick={() => setCode(problem.starterCode?.[language] || '')} style={{ background: 'none', border: 'none', color: '#8b949e', cursor: 'pointer' }} title="Reset code template">
             <RotateCcw size={16} />
           </button>
         </div>

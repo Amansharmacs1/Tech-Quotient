@@ -12,16 +12,30 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { contestsData, studentProfile } from '../data/mockData';
+import { registerContestApi } from '../services/api';
 
 export default function Contests({ setActiveTab }) {
-  const liveContest = contestsData[0];
+  const liveContest = contestsData[0] || {
+    id: "c-1",
+    title: "TechQuotient Algo Clash #14",
+    status: "Live",
+    participants: 142,
+    duration: "2 Hours",
+    questionsCount: 4,
+    leaderboard: [
+      { rank: 1, name: "Aarav Sharma", score: 400, solved: 4, penalty: "42m" },
+      { rank: 12, name: "Ansh Goyal (You)", score: 350, solved: 3, penalty: "48m" }
+    ]
+  };
+
   const upcomingContests = contestsData.filter(c => c.status === 'Upcoming');
   const pastContests = contestsData.filter(c => c.status === 'Completed');
 
   const [registeredMap, setRegisteredMap] = useState({});
 
-  const handleRegister = (id) => {
+  const handleRegister = async (id) => {
     setRegisteredMap(prev => ({ ...prev, [id]: true }));
+    await registerContestApi(id);
   };
 
   return (
@@ -59,13 +73,13 @@ export default function Contests({ setActiveTab }) {
             </h2>
 
             <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.875rem', color: '#cbd5e1', marginTop: '0.75rem' }}>
-              <span><Clock size={16} style={{ display: 'inline', marginRight: '4px' }} /> Duration: {liveContest.duration}</span>
-              <span><Users size={16} style={{ display: 'inline', marginRight: '4px' }} /> Participants: {liveContest.participants}</span>
-              <span><Zap size={16} style={{ display: 'inline', marginRight: '4px' }} /> Problems: {liveContest.questionsCount}</span>
+              <span><Clock size={16} style={{ display: 'inline', marginRight: '4px' }} /> Duration: {liveContest.duration || '2 Hours'}</span>
+              <span><Users size={16} style={{ display: 'inline', marginRight: '4px' }} /> Participants: {liveContest.participants || 142}</span>
+              <span><Zap size={16} style={{ display: 'inline', marginRight: '4px' }} /> Problems: {liveContest.questionsCount || 4}</span>
             </div>
           </div>
 
-          <button onClick={() => setActiveTab('coding-workspace')} className="btn btn-primary" style={{ padding: '0.8rem 1.75rem' }}>
+          <button onClick={() => setActiveTab && setActiveTab('coding-workspace')} className="btn btn-primary" style={{ padding: '0.8rem 1.75rem' }}>
             <Play size={18} /> Enter Contest Arena
           </button>
         </div>
@@ -93,7 +107,7 @@ export default function Contests({ setActiveTab }) {
               </tr>
             </thead>
             <tbody>
-              {liveContest.leaderboard.map((row) => (
+              {(liveContest.leaderboard || []).map((row) => (
                 <tr 
                   key={row.rank} 
                   style={{ 
@@ -144,7 +158,7 @@ export default function Contests({ setActiveTab }) {
                   <span className="badge badge-info">{c.status}</span>
                 </div>
                 <div style={{ fontSize: '0.825rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
-                  Starts: <strong>{c.startTime}</strong> • Duration: {c.duration}
+                  Starts: <strong>{c.startTime || 'Tomorrow at 6:00 PM'}</strong> • Duration: {c.duration}
                 </div>
                 <button 
                   onClick={() => handleRegister(c.id)}
@@ -167,10 +181,10 @@ export default function Contests({ setActiveTab }) {
               <div key={c.id} style={{ padding: '1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--card-border)', backgroundColor: '#f8fafc' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                   <h4 style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--dark-heading)' }}>{c.title}</h4>
-                  <span className="badge badge-success">Rank #{c.userRank}</span>
+                  <span className="badge badge-success">Rank #{c.userRank || 8}</span>
                 </div>
                 <div style={{ fontSize: '0.825rem', color: 'var(--text-muted)' }}>
-                  Total Score: <strong>{c.score} Pts</strong> • {c.participants} Participants
+                  Total Score: <strong>{c.score || 480} Pts</strong> • {c.participants} Participants
                 </div>
               </div>
             ))}

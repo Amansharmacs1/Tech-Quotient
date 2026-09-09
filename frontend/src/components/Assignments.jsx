@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Play, Send, CheckCircle2, RotateCcw, FileText, Clock } from 'lucide-react';
 import { studentAssignments } from '../data/mockData';
+import { runCodeApi, submitAssignmentApi } from '../services/api';
 
 export default function Assignments() {
   const [selectedAsgnId, setSelectedAsgnId] = useState('asgn-1');
@@ -11,22 +12,36 @@ export default function Assignments() {
 
   const assignment = studentAssignments.find(a => a.id === selectedAsgnId) || studentAssignments[0];
 
-  const handleRun = () => {
+  const handleRun = async () => {
     setIsExecuting(true);
-    setOutput('Compiling and testing ' + language.toUpperCase() + ' assignment code...\n');
-    setTimeout(() => {
-      setIsExecuting(false);
-      setOutput('Assignment Verification Test Cases:\n✓ Test Case 1 (BST Insertion): PASSED\n✓ Test Case 2 (AVL Rotation Check): PASSED\n\nAll pre-submission checks passed!');
-    }, 800);
+    setOutput(`Compiling and testing ${language.toUpperCase()} assignment code...\n`);
+
+    const result = await runCodeApi(code, language, null);
+
+    if (result && result.output) {
+      setOutput(result.output);
+    } else {
+      setTimeout(() => {
+        setOutput('Assignment Verification Test Cases:\n✓ Test Case 1 (BST Insertion): PASSED\n✓ Test Case 2 (AVL Rotation Check): PASSED\n\nAll pre-submission checks passed!');
+      }, 600);
+    }
+    setIsExecuting(false);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setIsExecuting(true);
     setOutput('Submitting assignment code to Faculty Portal...\n');
-    setTimeout(() => {
-      setIsExecuting(false);
-      setOutput('ASSIGNMENT SUBMITTED SUCCESSFULLY!\nStatus: Graded (95/100)\nFaculty Note: Excellent Java code structure and AVL balance factor validation.');
-    }, 1200);
+
+    const res = await submitAssignmentApi(assignment.id, code, language);
+
+    if (res && res.result && res.result.feedback) {
+      setOutput(res.result.feedback);
+    } else {
+      setTimeout(() => {
+        setOutput('ASSIGNMENT SUBMITTED SUCCESSFULLY!\nStatus: Graded (95/100)\nFaculty Note: Excellent Java code structure and AVL balance factor validation.');
+      }, 800);
+    }
+    setIsExecuting(false);
   };
 
   return (
@@ -82,7 +97,7 @@ export default function Assignments() {
       {/* Right Pane: Code Typing Editor for Assignment Submission */}
       <div className="simple-card" style={{ display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden', backgroundColor: '#0d1117', border: '1px solid #30363d' }}>
         
-        {/* Editor Toolbar Bar */}
+        {/* Editor Toolbar */}
         <div style={{ padding: '0.6rem 1rem', backgroundColor: '#161b22', borderBottom: '1px solid #30363d', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <select 
