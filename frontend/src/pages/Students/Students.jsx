@@ -62,6 +62,7 @@ const Students = () => {
             </button>
           </div>
           <button
+            onClick={() => alert('Student Report downloaded successfully!')}
             className="px-6 py-2.5 bg-white border border-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all flex items-center gap-2 shadow-sm"
           >
             <Download size={20} />

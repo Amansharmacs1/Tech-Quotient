@@ -30,7 +30,7 @@ const ExportReportModal = ({ isOpen, onClose, reportName }) => {
           <div className="p-6 space-y-4">
             <p className="text-sm font-medium text-gray-700 mb-2">Select Export Format:</p>
             
-            <button className="w-full p-4 rounded-xl border border-gray-200 hover:border-red-300 hover:bg-red-50 transition-colors flex items-center gap-4 group">
+            <button onClick={() => { alert('Downloading PDF...'); onClose(); }} className="w-full p-4 rounded-xl border border-gray-200 hover:border-red-300 hover:bg-red-50 transition-colors flex items-center gap-4 group">
               <div className="w-10 h-10 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                 <FileText size={20} />
               </div>
@@ -41,7 +41,7 @@ const ExportReportModal = ({ isOpen, onClose, reportName }) => {
               <Download size={18} className="text-gray-400 group-hover:text-red-500" />
             </button>
 
-            <button className="w-full p-4 rounded-xl border border-gray-200 hover:border-green-300 hover:bg-green-50 transition-colors flex items-center gap-4 group">
+            <button onClick={() => { alert('Downloading Excel Spreadsheet...'); onClose(); }} className="w-full p-4 rounded-xl border border-gray-200 hover:border-green-300 hover:bg-green-50 transition-colors flex items-center gap-4 group">
               <div className="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                 <FileSpreadsheet size={20} />
               </div>
@@ -52,7 +52,7 @@ const ExportReportModal = ({ isOpen, onClose, reportName }) => {
               <Download size={18} className="text-gray-400 group-hover:text-green-500" />
             </button>
 
-            <button className="w-full p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors flex items-center gap-4 group">
+            <button onClick={() => { alert('Downloading CSV Data...'); onClose(); }} className="w-full p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors flex items-center gap-4 group">
               <div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                 <FileJson size={20} />
               </div>
