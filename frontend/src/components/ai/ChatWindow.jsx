@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Sparkles, Loader2 } from 'lucide-react';
+import { Send, Sparkles, Loader2, Trash2 } from 'lucide-react';
 import ChatMessage from './ChatMessage';
 import SuggestedPrompt from './SuggestedPrompt';
 import { dummyChatHistory, suggestedPrompts } from '../../data/aiResponses';
+import { sendAssistantMessage } from '../../services/aiService';
 
 const ChatWindow = () => {
-  const [messages, setMessages] = useState(dummyChatHistory);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
@@ -18,24 +19,22 @@ const ChatWindow = () => {
     scrollToBottom();
   }, [messages, isTyping]);
 
-  const handleSend = (text) => {
+  const handleSend = async (text) => {
     if (!text.trim()) return;
 
-    // Add user message
     const newUserMessage = { role: 'user', content: text };
-    setMessages(prev => [...prev, newUserMessage]);
+    const updatedMessages = [...messages, newUserMessage];
+    setMessages(updatedMessages);
     setInput('');
     setIsTyping(true);
 
-    // Simulate AI response
-    setTimeout(() => {
-      const aiResponse = { 
-        role: 'ai', 
-        content: `This is a simulated AI response to: "${text}". In the final integration, this will be connected to a real LLM backend (e.g. OpenAI or Gemini) to provide actual contextual answers based on your course data.` 
-      };
-      setMessages(prev => [...prev, aiResponse]);
-      setIsTyping(false);
-    }, 1500);
+    const aiResponse = await sendAssistantMessage(text, updatedMessages);
+    setMessages(prev => [...prev, aiResponse]);
+    setIsTyping(false);
+  };
+
+  const handleClear = () => {
+    setMessages([]);
   };
 
   return (
@@ -52,36 +51,50 @@ const ChatWindow = () => {
             <p className="text-xs text-green-500 font-medium">Online & Ready</p>
           </div>
         </div>
+        <button 
+          onClick={handleClear}
+          className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-2 text-sm font-medium"
+        >
+          <Trash2 size={16} /> Clear Conversation
+        </button>
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 overflow-y-auto p-6 bg-gray-50/50">
-        {messages.map((msg, idx) => (
-          <ChatMessage key={idx} role={msg.role} content={msg.content} />
-        ))}
-        
-        {isTyping && (
-          <div className="flex gap-4 mb-6">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-primary/10 text-primary">
-              <Sparkles size={20} />
-            </div>
-            <div className="bg-white border border-gray-100 rounded-2xl rounded-tl-sm p-4 flex items-center gap-2 text-gray-400">
-              <Loader2 size={16} className="animate-spin" />
-              <span className="text-sm">AI is thinking...</span>
+      <div className="flex-1 overflow-y-auto p-6 bg-gray-50/50 flex flex-col">
+        {messages.length === 0 ? (
+          <div className="flex-1 flex flex-col items-center justify-center max-w-md mx-auto text-center">
+            <Sparkles size={48} className="text-primary/20 mb-4" />
+            <h3 className="text-xl font-bold text-gray-800 mb-2">Try asking</h3>
+            <div className="flex flex-wrap justify-center gap-2 mt-4">
+              {suggestedPrompts.map(prompt => (
+                <SuggestedPrompt key={prompt} prompt={prompt} onClick={handleSend} />
+              ))}
             </div>
           </div>
+        ) : (
+          <>
+            {messages.map((msg, idx) => (
+              <ChatMessage key={idx} role={msg.role} content={msg.content} />
+            ))}
+            
+            {isTyping && (
+              <div className="flex gap-4 mb-6">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-primary/10 text-primary">
+                  <Sparkles size={20} />
+                </div>
+                <div className="bg-white border border-gray-100 rounded-2xl rounded-tl-sm p-4 flex items-center gap-2 text-gray-400">
+                  <Loader2 size={16} className="animate-spin" />
+                  <span className="text-sm">AI is thinking...</span>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </>
         )}
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Input Area */}
       <div className="p-4 border-t border-gray-200 bg-white shrink-0">
-        <div className="flex overflow-x-auto pb-4 gap-2 no-scrollbar hide-scrollbar">
-          {suggestedPrompts.map(prompt => (
-            <SuggestedPrompt key={prompt} prompt={prompt} onClick={handleSend} />
-          ))}
-        </div>
-        
         <form 
           onSubmit={(e) => { e.preventDefault(); handleSend(input); }}
           className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl p-2 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all"
@@ -90,7 +103,7 @@ const ChatWindow = () => {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask me anything about your courses, students, or generate content..."
+            placeholder="Ask TechQuotient AI anything..."
             className="flex-1 bg-transparent border-none focus:outline-none px-4 text-sm text-gray-700"
           />
           <button 

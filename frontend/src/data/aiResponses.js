@@ -1,24 +1,36 @@
 export const aiGeneratedProblem = {
-  title: "Valid Binary Search Tree Verification",
-  statement: "Given the root of a binary tree, determine if it is a valid binary search tree (BST).\n\nA valid BST is defined as follows:\n- The left subtree of a node contains only nodes with keys less than the node's key.\n- The right subtree of a node contains only nodes with keys greater than the node's key.\n- Both the left and right subtrees must also be binary search trees.",
-  inputFormat: "The input consists of a serialized array representation of a binary tree using level-order traversal, where 'null' signifies an empty node.",
-  outputFormat: "Return a boolean value: true if the tree is a valid BST, otherwise false.",
+  title: "Longest Increasing Subsequence",
+  difficulty: "Medium",
+  topic: "Dynamic Programming",
+  statement: "Given an integer array nums, return the length of the longest strictly increasing subsequence.\n\nA subsequence is a sequence that can be derived from an array by deleting some or no elements without changing the order of the remaining elements. For example, [3,6,2,7] is a subsequence of the array [0,3,1,6,2,2,7].",
+  inputFormat: "The first line contains an integer n (the size of the array).\nThe second line contains n space-separated integers representing the array nums.",
+  outputFormat: "Return a single integer: the length of the longest strictly increasing subsequence.",
   constraints: [
-    "The number of nodes in the tree is in the range [1, 10^4].",
-    "-2^31 <= Node.val <= 2^31 - 1"
+    "1 <= nums.length <= 2500",
+    "-10^4 <= nums[i] <= 10^4"
   ],
-  sampleInput: "[2,1,3]",
-  sampleOutput: "true",
+  sampleInput: "8\n10 9 2 5 3 7 101 18",
+  sampleOutput: "4",
+  explanation: "The longest increasing subsequence is [2, 3, 7, 101], therefore the length is 4.",
+  suggestedTestCases: [
+    "[0,1,0,3,2,3] -> 4",
+    "[7,7,7,7,7,7,7] -> 1"
+  ],
+  expectedApproach: "Create a DP array where dp[i] represents the length of the longest increasing subsequence that ends with nums[i]. Initialize all dp values to 1. For each i from 1 to n-1, for each j from 0 to i-1, if nums[i] > nums[j], dp[i] = max(dp[i], dp[j] + 1). The result is the maximum value in the dp array.",
+  timeComplexity: "O(N^2) using standard DP, or O(N log N) using binary search.",
+  spaceComplexity: "O(N) to store the DP array.",
   hints: [
-    "Consider using recursion.",
-    "A simple in-order traversal of a valid BST will yield a strictly increasing sequence.",
-    "If you pass down a min and max valid range for each node during recursion, you can validate in O(N) time."
+    "Consider using recursion with memoization first.",
+    "Can you build the solution iteratively from the smallest subproblems?",
+    "Think about how to keep track of the smallest ending element of an increasing subsequence of a given length to achieve O(N log N)."
   ],
-  tags: ["Trees", "Binary Search Tree", "Recursion", "Depth-First Search"]
+  tags: ["Array", "Binary Search", "Dynamic Programming"]
 };
 
 export const aiGeneratedAssignment = {
   title: "Dynamic Programming Foundations",
+  course: "Data Structures and Algorithms",
+  description: "A comprehensive assignment to evaluate understanding of overlapping subproblems, optimal substructure, and bottom-up DP implementations.",
   learningObjectives: [
     "Understand overlapping subproblems and optimal substructure.",
     "Implement memoization (top-down).",
@@ -26,12 +38,14 @@ export const aiGeneratedAssignment = {
   ],
   estimatedDifficulty: "Medium-Hard",
   totalMarks: 100,
+  duration: 120, // minutes
   problems: [
-    { title: "Fibonacci Number (Memoization)", marks: 20, difficulty: "Easy" },
-    { title: "Climbing Stairs", marks: 20, difficulty: "Easy" },
-    { title: "Longest Increasing Subsequence", marks: 30, difficulty: "Medium" },
-    { title: "0/1 Knapsack Problem", marks: 30, difficulty: "Hard" }
-  ]
+    { title: "Fibonacci Number (Memoization)", marks: 20, difficulty: "Easy", topic: "Recursion" },
+    { title: "Climbing Stairs", marks: 20, difficulty: "Easy", topic: "Dynamic Programming" },
+    { title: "Longest Increasing Subsequence", marks: 30, difficulty: "Medium", topic: "Dynamic Programming" },
+    { title: "0/1 Knapsack Problem", marks: 30, difficulty: "Hard", topic: "Dynamic Programming" }
+  ],
+  skillsEvaluated: ["State Space Definition", "Transition Equations", "Optimization"]
 };
 
 export const studentInsights = {
@@ -62,9 +76,10 @@ export const dummyChatHistory = [
 ];
 
 export const suggestedPrompts = [
-  "Generate an Easy Array problem.",
-  "Suggest assignments for recursion.",
-  "Which students need additional support?",
-  "Recommend practice questions for Graphs.",
-  "Explain why submissions are failing."
+  "Generate a medium Graph problem",
+  "Which topics are students struggling with?",
+  "Create a 5-question DSA assignment",
+  "How can I improve student performance in DP?",
+  "Suggest practice problems for Trees",
+  "Analyze Assignment 3 performance"
 ];

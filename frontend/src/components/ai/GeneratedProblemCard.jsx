@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FileText, Save, Edit, RefreshCw, Copy, Tag } from 'lucide-react';
+import { FileText, Save, Edit, RefreshCw, Copy, Tag, AlertTriangle } from 'lucide-react';
 
 const GeneratedProblemCard = ({ problem }) => {
   return (
@@ -13,6 +13,13 @@ const GeneratedProblemCard = ({ problem }) => {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full">AI Generated</span>
+            <span className={`px-2.5 py-1 rounded-md text-xs font-bold ${
+                    problem.difficulty === 'Easy' ? 'bg-green-100 text-green-700' :
+                    problem.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-700' :
+                    'bg-red-100 text-red-700'
+                  }`}>
+              {problem.difficulty}
+            </span>
             <h2 className="text-2xl font-bold text-gray-900">{problem.title}</h2>
           </div>
           <div className="flex items-center gap-2 mt-3">
@@ -34,6 +41,11 @@ const GeneratedProblemCard = ({ problem }) => {
       </div>
 
       <div className="p-6 space-y-6">
+        <div className="flex items-start gap-2 bg-yellow-50 text-yellow-800 p-3 rounded-lg border border-yellow-200 text-sm">
+          <AlertTriangle size={18} className="shrink-0 mt-0.5" />
+          <p><strong>AI-generated content may contain errors.</strong> Review before publishing.</p>
+        </div>
+
         <div>
           <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider mb-2">Problem Statement</h3>
           <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{problem.statement}</p>
@@ -42,11 +54,11 @@ const GeneratedProblemCard = ({ problem }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
             <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider mb-2">Input Format</h3>
-            <p className="text-sm text-gray-600">{problem.inputFormat}</p>
+            <p className="text-sm text-gray-600 whitespace-pre-wrap">{problem.inputFormat}</p>
           </div>
           <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
             <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider mb-2">Output Format</h3>
-            <p className="text-sm text-gray-600">{problem.outputFormat}</p>
+            <p className="text-sm text-gray-600 whitespace-pre-wrap">{problem.outputFormat}</p>
           </div>
         </div>
 
@@ -60,17 +72,36 @@ const GeneratedProblemCard = ({ problem }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider mb-2">Sample Input</h3>
-            <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl text-sm font-mono overflow-x-auto">
+            <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl text-sm font-mono overflow-x-auto whitespace-pre-wrap">
               {problem.sampleInput}
             </pre>
           </div>
           <div>
             <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider mb-2">Sample Output</h3>
-            <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl text-sm font-mono overflow-x-auto">
+            <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl text-sm font-mono overflow-x-auto whitespace-pre-wrap">
               {problem.sampleOutput}
             </pre>
           </div>
         </div>
+
+        {problem.explanation && (
+          <div>
+            <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider mb-2">Explanation</h3>
+            <p className="text-sm text-gray-600">{problem.explanation}</p>
+          </div>
+        )}
+
+        {problem.expectedApproach && (
+          <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+            <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider mb-2 text-blue-800">Expected Approach</h3>
+            <p className="text-sm text-gray-600">{problem.expectedApproach}</p>
+            <div className="mt-3 flex items-center gap-4 text-xs font-bold text-blue-700">
+              <span>Time Complexity: {problem.timeComplexity}</span>
+              <span>Space Complexity: {problem.spaceComplexity}</span>
+            </div>
+          </div>
+        )}
+
       </div>
 
       <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
@@ -78,7 +109,7 @@ const GeneratedProblemCard = ({ problem }) => {
           <Edit size={16} /> Edit Manually
         </button>
         <button className="px-5 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-colors shadow-sm flex items-center gap-2">
-          <Save size={16} /> Save to Problem Bank
+          <Save size={16} /> Save Problem
         </button>
       </div>
     </motion.div>

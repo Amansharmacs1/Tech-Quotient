@@ -5,28 +5,45 @@ import PromptPanel from '../../components/ai/PromptPanel';
 import AssignmentPreview from '../../components/ai/AssignmentPreview';
 import LoadingAnimation from '../../components/ai/LoadingAnimation';
 import EmptyAIState from '../../components/ai/EmptyAIState';
-import { aiGeneratedAssignment } from '../../data/aiResponses';
+import { generateAssignment } from '../../services/aiService';
 
 const AssignmentGenerator = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedAssignment, setGeneratedAssignment] = useState(null);
+  const [loadingText, setLoadingText] = useState("Structuring assignment syllabus...");
 
   const handleGenerate = (data) => {
     setIsGenerating(true);
     setGeneratedAssignment(null);
     
-    setTimeout(() => {
-      setGeneratedAssignment(aiGeneratedAssignment);
+    const texts = [
+      "Structuring assignment syllabus...",
+      "Selecting appropriate problems...",
+      "Balancing difficulty...",
+      "Finalizing learning objectives..."
+    ];
+    let i = 0;
+    const interval = setInterval(() => {
+      i = (i + 1) % texts.length;
+      setLoadingText(texts[i]);
+    }, 800);
+
+    generateAssignment(data).then((assignment) => {
+      clearInterval(interval);
+      setGeneratedAssignment(assignment);
       setIsGenerating(false);
-    }, 3000);
+    });
   };
 
   const fields = [
     { id: 'course', label: 'Course', type: 'select', options: ['Data Structures', 'Algorithms', 'Database Management', 'Computer Networks'] },
     { id: 'topics', label: 'Topics (Comma separated)', type: 'text' },
+    { id: 'count', label: 'Number of Problems', type: 'number' },
     { id: 'difficultyMix', label: 'Difficulty Mix', type: 'select', options: ['Balanced', 'Mostly Easy', 'Mostly Hard'] },
-    { id: 'count', label: 'Number of Questions', type: 'number' },
-    { id: 'duration', label: 'Estimated Duration (Hours)', type: 'number' }
+    { id: 'duration', label: 'Duration (Minutes)', type: 'number' },
+    { id: 'maxMarks', label: 'Maximum Marks', type: 'number' },
+    { id: 'objective', label: 'Learning Objective', type: 'text' },
+    { id: 'instructions', label: 'Additional Instructions', type: 'text' }
   ];
 
   return (
@@ -47,13 +64,13 @@ const AssignmentGenerator = () => {
 
       <div className="mt-8">
         {isGenerating ? (
-          <div className="bg-white rounded-2xl border border-gray-100 p-12 shadow-sm">
-            <LoadingAnimation text="Structuring assignment syllabus..." />
+          <div className="bg-white rounded-2xl border border-gray-100 p-12 shadow-sm min-h-[400px] flex items-center justify-center">
+            <LoadingAnimation text={loadingText} />
           </div>
         ) : generatedAssignment ? (
           <AssignmentPreview assignment={generatedAssignment} />
         ) : (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm">
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm min-h-[400px] flex items-center justify-center">
             <EmptyAIState message="Ready to Design" />
           </div>
         )}

@@ -1,32 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import PromptPanel from '../../components/ai/PromptPanel';
 import GeneratedProblemCard from '../../components/ai/GeneratedProblemCard';
 import LoadingAnimation from '../../components/ai/LoadingAnimation';
 import EmptyAIState from '../../components/ai/EmptyAIState';
-import { aiGeneratedProblem } from '../../data/aiResponses';
+import { generateProblem } from '../../services/aiService';
 
 const ProblemGenerator = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedProblem, setGeneratedProblem] = useState(null);
+  const [loadingText, setLoadingText] = useState("Understanding requirements...");
 
   const handleGenerate = (data) => {
     setIsGenerating(true);
     setGeneratedProblem(null);
     
-    // Simulate AI generation delay
-    setTimeout(() => {
-      setGeneratedProblem(aiGeneratedProblem);
+    // Cycle loading texts
+    const texts = [
+      "Understanding requirements...",
+      "Designing problem...",
+      "Preparing test cases...",
+      "Generating solution guidance..."
+    ];
+    let i = 0;
+    const interval = setInterval(() => {
+      i = (i + 1) % texts.length;
+      setLoadingText(texts[i]);
+    }, 800);
+
+    generateProblem(data).then((problem) => {
+      clearInterval(interval);
+      setGeneratedProblem(problem);
       setIsGenerating(false);
-    }, 2500);
+    });
   };
 
   const fields = [
     { id: 'course', label: 'Course', type: 'select', options: ['Data Structures', 'Algorithms', 'Database Management', 'Computer Networks'] },
-    { id: 'topic', label: 'Topic', type: 'text' },
+    { id: 'topic', label: 'Topic (e.g., Arrays, Trees)', type: 'text' },
     { id: 'difficulty', label: 'Difficulty', type: 'select', options: ['Easy', 'Medium', 'Hard'] },
-    { id: 'count', label: 'Number of Problems', type: 'number' }
+    { id: 'problemType', label: 'Problem Type', type: 'select', options: ['Coding', 'Conceptual', 'Debugging'] },
+    { id: 'concept', label: 'Programming Concept', type: 'text' },
+    { id: 'count', label: 'Number of Problems', type: 'number' },
+    { id: 'instructions', label: 'Additional Instructions', type: 'text' }
   ];
 
   return (
@@ -47,13 +64,13 @@ const ProblemGenerator = () => {
 
       <div className="mt-8">
         {isGenerating ? (
-          <div className="bg-white rounded-2xl border border-gray-100 p-12 shadow-sm">
-            <LoadingAnimation text="Generating coding problem..." />
+          <div className="bg-white rounded-2xl border border-gray-100 p-12 shadow-sm min-h-[400px] flex items-center justify-center">
+            <LoadingAnimation text={loadingText} />
           </div>
         ) : generatedProblem ? (
           <GeneratedProblemCard problem={generatedProblem} />
         ) : (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm">
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm min-h-[400px] flex items-center justify-center">
             <EmptyAIState message="Ready to Generate" />
           </div>
         )}
