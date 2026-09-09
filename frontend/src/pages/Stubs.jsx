@@ -20,3 +20,5 @@ export const Problems = () => <PagePlaceholder title="Coding Problems" />;
 export const Assignments = () => <PagePlaceholder title="Assignments" />;
 export const Analytics = () => <PagePlaceholder title="Analytics" />;
 export const Profile = () => <PagePlaceholder title="Profile" />;
+export const Announcements = () => <PagePlaceholder title="Announcements" />;
+export const Contests = () => <PagePlaceholder title="Contests" />;

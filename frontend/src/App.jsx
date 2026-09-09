@@ -2,7 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './layout/Layout';
 import Dashboard from './pages/Dashboard';
-import { Profile } from './pages/Stubs';
+import { Profile, Announcements, Contests } from './pages/Stubs';
 
 import Courses from './pages/Courses/Courses';
 import CreateCourse from './pages/Courses/CreateCourse';
@@ -67,7 +67,7 @@ function App() {
           <Route path=":id" element={<AssignmentDetails />} />
           <Route path=":id/submissions" element={<AssignmentSubmissions />} />
         </Route>
-        <Route path="contests" element={<Courses />} />
+        <Route path="contests" element={<Contests />} />
         {/* Student Module Routes */}
         <Route path="students">
           <Route index element={<Students />} />
@@ -100,7 +100,7 @@ function App() {
           <Route path="history" element={<AIHistory />} />
         </Route>
 
-        <Route path="announcements" element={<Courses />} />
+        <Route path="announcements" element={<Announcements />} />
         <Route path="settings" element={<Profile />} />
       </Route>
     </Routes>
