@@ -10,14 +10,12 @@ import EmptyAssignmentState from '../../components/assignments/EmptyAssignmentSt
 import DeleteAssignmentModal from '../../components/assignments/DeleteAssignmentModal';
 import PublishModal from '../../components/assignments/PublishModal';
 
-// Dummy Data
-import { assignmentsData } from '../../data/assignments';
-
-// Simulated global store
-let globalAssignments = [...assignmentsData];
+import { getAssignments, deleteAssignment, updateAssignment } from '../../services/assignmentService';
 
 const Assignments = () => {
-  const [assignments, setAssignments] = useState(globalAssignments);
+  const [assignments, setAssignments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [viewMode, setViewMode] = useState('grid');
   
   // Filters state
@@ -31,22 +29,34 @@ const Assignments = () => {
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
   const [selectedAssignment, setSelectedAssignment] = useState(null);
 
-  // Sync to global memory
+  const fetchAssignments = async () => {
+    try {
+      setLoading(true);
+      const data = await getAssignments();
+      setAssignments(data);
+    } catch (err) {
+      setError('Unable to load assignments');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    globalAssignments = [...assignments];
-  }, [assignments]);
+    fetchAssignments();
+  }, []);
 
   // Derived state (Filtering & Sorting)
   const filteredAssignments = assignments.filter(assignment => {
     const matchesSearch = assignment.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCourse = filterCourse ? assignment.course === filterCourse : true;
+    const courseName = assignment.courseId?.courseName || '';
+    const matchesCourse = filterCourse ? courseName === filterCourse : true;
     const matchesStatus = filterStatus ? assignment.status === filterStatus : true;
 
     return matchesSearch && matchesCourse && matchesStatus;
   }).sort((a, b) => {
-    if (sortBy === 'latest') return b.id - a.id;
-    if (sortBy === 'submissions') return b.submissions - a.submissions;
-    if (sortBy === 'course') return a.course.localeCompare(b.course);
+    if (sortBy === 'latest') return new Date(b.createdAt) - new Date(a.createdAt);
+    if (sortBy === 'submissions') return (b.submissions || 0) - (a.submissions || 0);
+    if (sortBy === 'course') return (a.courseId?.courseName || '').localeCompare(b.courseId?.courseName || '');
     if (sortBy === 'deadline') return new Date(a.deadline) - new Date(b.deadline);
     return 0;
   });
@@ -61,21 +71,31 @@ const Assignments = () => {
     setIsPublishModalOpen(true);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (selectedAssignment) {
-      setAssignments(prev => prev.filter(a => a.id !== selectedAssignment.id));
-      setSelectedAssignment(null);
-      setIsDeleteModalOpen(false);
+      try {
+        await deleteAssignment(selectedAssignment._id);
+        setAssignments(prev => prev.filter(a => a._id !== selectedAssignment._id));
+        setSelectedAssignment(null);
+        setIsDeleteModalOpen(false);
+      } catch (err) {
+        alert('Failed to delete assignment');
+      }
     }
   };
 
-  const handleConfirmPublish = () => {
+  const handleConfirmPublish = async () => {
     if (selectedAssignment) {
-      setAssignments(prev => prev.map(a => 
-        a.id === selectedAssignment.id ? { ...a, status: 'Published' } : a
-      ));
-      setSelectedAssignment(null);
-      setIsPublishModalOpen(false);
+      try {
+        await updateAssignment(selectedAssignment._id, { status: 'Published' });
+        setAssignments(prev => prev.map(a => 
+          a._id === selectedAssignment._id ? { ...a, status: 'Published' } : a
+        ));
+        setSelectedAssignment(null);
+        setIsPublishModalOpen(false);
+      } catch (err) {
+        alert('Failed to publish assignment');
+      }
     }
   };
 
@@ -123,7 +143,15 @@ const Assignments = () => {
         sortBy={sortBy} setSortBy={setSortBy}
       />
 
-      {assignments.length === 0 ? (
+      {loading ? (
+        <div className="text-center py-12 text-gray-500 bg-white rounded-xl border border-gray-100">
+          Loading assignments...
+        </div>
+      ) : error ? (
+        <div className="text-center py-12 text-red-500 bg-red-50 rounded-xl border border-red-100">
+          {error}
+        </div>
+      ) : assignments.length === 0 ? (
         <EmptyAssignmentState />
       ) : filteredAssignments.length === 0 ? (
         <div className="bg-white rounded-xl p-12 text-center border border-gray-100 shadow-sm">
@@ -149,7 +177,7 @@ const Assignments = () => {
             >
               {filteredAssignments.map(assignment => (
                 <AssignmentCard 
-                  key={assignment.id} 
+                  key={assignment._id} 
                   assignment={assignment} 
                   onDeleteClick={handleDeleteClick}
                   onPublishClick={handlePublishClick}
@@ -191,4 +219,3 @@ const Assignments = () => {
 };
 
 export default Assignments;
-export { globalAssignments };

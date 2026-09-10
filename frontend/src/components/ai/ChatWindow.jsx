@@ -5,7 +5,7 @@ import SuggestedPrompt from './SuggestedPrompt';
 import { dummyChatHistory, suggestedPrompts } from '../../data/aiResponses';
 import { sendAssistantMessage } from '../../services/aiService';
 
-const ChatWindow = () => {
+const ChatWindow = ({ defaultMessage }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -18,6 +18,15 @@ const ChatWindow = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages, isTyping]);
+
+  const hasSentDefault = useRef(false);
+
+  useEffect(() => {
+    if (defaultMessage && !hasSentDefault.current) {
+      hasSentDefault.current = true;
+      handleSend(defaultMessage);
+    }
+  }, [defaultMessage]);
 
   const handleSend = async (text) => {
     if (!text.trim()) return;

@@ -39,9 +39,7 @@ const AIHistory = () => {
               className="pl-10 pr-4 py-2 bg-gray-50 border-none rounded-lg focus:outline-none focus:ring-1 focus:ring-primary text-sm w-48"
             />
           </div>
-          <button className="p-2 text-gray-400 hover:text-primary bg-gray-50 rounded-lg">
-            <Filter size={18} />
-          </button>
+
         </div>
       </div>
 
@@ -55,7 +53,6 @@ const AIHistory = () => {
                 <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Course</th>
                 <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Date</th>
                 <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -74,13 +71,7 @@ const AIHistory = () => {
                       {item.status}
                     </span>
                   </td>
-                  <td className="p-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <button className="p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-md transition-colors" title="View"><Eye size={16} /></button>
-                      <button className="p-1.5 text-gray-400 hover:text-green-500 hover:bg-green-50 rounded-md transition-colors" title="Reuse"><RefreshCw size={16} /></button>
-                      <button className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors" title="Delete"><Trash2 size={16} /></button>
-                    </div>
-                  </td>
+
                 </tr>
               ))}
             </tbody>

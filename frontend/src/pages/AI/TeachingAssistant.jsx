@@ -1,9 +1,12 @@
 import React from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import ChatWindow from '../../components/ai/ChatWindow';
 
 const TeachingAssistant = () => {
+  const location = useLocation();
+  const defaultMessage = location.state?.defaultMessage;
+
   return (
     <div className="max-w-4xl mx-auto pb-6 h-full flex flex-col">
       <div className="mb-4 shrink-0">
@@ -15,7 +18,7 @@ const TeachingAssistant = () => {
       </div>
 
       <div className="flex-1 min-h-[500px]">
-        <ChatWindow />
+        <ChatWindow defaultMessage={defaultMessage} />
       </div>
     </div>
   );

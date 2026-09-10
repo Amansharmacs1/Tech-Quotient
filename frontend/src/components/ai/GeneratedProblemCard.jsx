@@ -30,14 +30,7 @@ const GeneratedProblemCard = ({ problem }) => {
             ))}
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <button className="p-2 text-gray-500 hover:bg-gray-200 rounded-lg transition-colors tooltip-trigger" title="Regenerate">
-            <RefreshCw size={18} />
-          </button>
-          <button className="p-2 text-gray-500 hover:bg-gray-200 rounded-lg transition-colors tooltip-trigger" title="Copy Content">
-            <Copy size={18} />
-          </button>
-        </div>
+
       </div>
 
       <div className="p-6 space-y-6">
@@ -104,14 +97,7 @@ const GeneratedProblemCard = ({ problem }) => {
 
       </div>
 
-      <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
-        <button className="px-5 py-2 bg-white border border-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2">
-          <Edit size={16} /> Edit Manually
-        </button>
-        <button className="px-5 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-colors shadow-sm flex items-center gap-2">
-          <Save size={16} /> Save Problem
-        </button>
-      </div>
+
     </motion.div>
   );
 };

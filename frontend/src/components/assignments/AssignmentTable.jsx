@@ -26,7 +26,7 @@ const AssignmentTable = ({ assignments, onDeleteClick, onPublishClick }) => {
               
               return (
                 <motion.tr
-                  key={assignment.id}
+                  key={assignment._id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.2, delay: index * 0.05 }}
@@ -35,8 +35,8 @@ const AssignmentTable = ({ assignments, onDeleteClick, onPublishClick }) => {
                   <td className="py-4 px-6 font-medium text-secondary truncate max-w-[200px]" title={assignment.title}>
                     {assignment.title}
                   </td>
-                  <td className="py-4 px-6 text-gray-500 truncate max-w-[150px]" title={assignment.course}>
-                    {assignment.course}
+                  <td className="py-4 px-6 text-gray-500 truncate max-w-[150px]" title={assignment.courseId?.courseName}>
+                    {assignment.courseId?.courseName}
                   </td>
                   <td className="py-4 px-6 text-gray-500">{problemsCount} Problems</td>
                   <td className="py-4 px-6 text-gray-500">
@@ -62,14 +62,14 @@ const AssignmentTable = ({ assignments, onDeleteClick, onPublishClick }) => {
                         </button>
                       )}
                       <Link
-                        to={`/assignments/${assignment.id}`}
+                        to={`/assignments/${assignment._id}`}
                         className="p-2 text-gray-400 hover:text-primary rounded-lg transition-colors"
                         title="View Details"
                       >
                         <Eye size={18} />
                       </Link>
                       <Link
-                        to={`/assignments/edit/${assignment.id}`}
+                        to={`/assignments/edit/${assignment._id}`}
                         className="p-2 text-gray-400 hover:text-primary rounded-lg transition-colors"
                         title="Edit Assignment"
                       >

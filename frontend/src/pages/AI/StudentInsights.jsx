@@ -48,9 +48,7 @@ const StudentInsights = () => {
             <option>Last 30 Days</option>
             <option>This Semester</option>
           </select>
-          <button className="p-2 text-gray-400 hover:text-primary bg-gray-50 rounded-lg">
-            <Filter size={18} />
-          </button>
+
         </div>
       </div>
 

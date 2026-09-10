@@ -21,7 +21,7 @@ const CourseTable = ({ courses, onDeleteClick }) => {
           <tbody>
             {courses.map((course, index) => (
               <motion.tr
-                key={course.id}
+                key={course._id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2, delay: index * 0.05 }}
@@ -45,14 +45,14 @@ const CourseTable = ({ courses, onDeleteClick }) => {
                 <td className="py-4 px-6">
                   <div className="flex items-center justify-end gap-1">
                     <Link
-                      to={`/courses/${course.id}`}
+                      to={`/courses/${course._id}`}
                       className="p-2 text-gray-400 hover:text-primary rounded-lg transition-colors"
                       title="View Details"
                     >
                       <Eye size={18} />
                     </Link>
                     <Link
-                      to={`/courses/edit/${course.id}`}
+                      to={`/courses/edit/${course._id}`}
                       className="p-2 text-gray-400 hover:text-primary rounded-lg transition-colors"
                       title="Edit Course"
                     >

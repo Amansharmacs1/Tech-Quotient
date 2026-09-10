@@ -3,21 +3,18 @@ import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import AssignmentForm from '../../components/assignments/AssignmentForm';
-import { globalAssignments } from './Assignments';
+import { createAssignment } from '../../services/assignmentService';
 
 const CreateAssignment = () => {
   const navigate = useNavigate();
 
-  const handleCreate = (newAssignmentData) => {
-    // Generate pseudo-ID
-    const newId = globalAssignments.length > 0 ? Math.max(...globalAssignments.map(a => a.id)) + 1 : 1;
-    const assignment = { ...newAssignmentData, id: newId };
-    
-    // Simulate API Create
-    globalAssignments.push(assignment);
-    
-    // Navigate back to listing
-    navigate('/assignments');
+  const handleCreate = async (newAssignmentData) => {
+    try {
+      await createAssignment(newAssignmentData);
+      navigate('/assignments');
+    } catch (err) {
+      alert('Failed to create assignment');
+    }
   };
 
   return (

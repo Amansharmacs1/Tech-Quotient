@@ -2,7 +2,9 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './layout/Layout';
 import Dashboard from './pages/Dashboard';
-import { Profile, Announcements, Contests } from './pages/Stubs';
+
+import Announcements from './pages/Announcements/Announcements';
+import Settings from './pages/Settings/Settings';
 
 import Courses from './pages/Courses/Courses';
 import CreateCourse from './pages/Courses/CreateCourse';
@@ -67,7 +69,6 @@ function App() {
           <Route path=":id" element={<AssignmentDetails />} />
           <Route path=":id/submissions" element={<AssignmentSubmissions />} />
         </Route>
-        <Route path="contests" element={<Contests />} />
         {/* Student Module Routes */}
         <Route path="students">
           <Route index element={<Students />} />
@@ -101,7 +102,7 @@ function App() {
         </Route>
 
         <Route path="announcements" element={<Announcements />} />
-        <Route path="settings" element={<Profile />} />
+        <Route path="settings" element={<Settings />} />
       </Route>
     </Routes>
   );

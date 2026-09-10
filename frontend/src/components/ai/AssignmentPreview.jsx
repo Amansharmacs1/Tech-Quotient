@@ -90,14 +90,7 @@ const AssignmentPreview = ({ assignment }) => {
         </div>
       </div>
 
-      <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
-        <button className="px-5 py-2 bg-white border border-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2">
-          <Edit size={16} /> Modify Content
-        </button>
-        <button className="px-5 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-colors shadow-sm flex items-center gap-2">
-          <Save size={16} /> Save Assignment
-        </button>
-      </div>
+
     </motion.div>
   );
 };

@@ -1,27 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Save, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ConstraintsEditor from './ConstraintsEditor';
 import TestCaseEditor from './TestCaseEditor';
+import { getCourses } from '../../services/courseService';
 
 const availableLanguages = ['C++', 'Java', 'Python', 'JavaScript'];
 
 const ProblemForm = ({ initialData, onSubmit, onCancel, submitLabel }) => {
   const navigate = useNavigate();
+  const [courses, setCourses] = useState([]);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const data = await getCourses();
+        setCourses(data);
+      } catch (err) {
+        console.error('Failed to load courses');
+      }
+    };
+    fetchCourses();
+  }, []);
 
   const [formData, setFormData] = useState(
     initialData || {
       title: '',
-      course: '',
+      courseId: '',
       topic: '',
       difficulty: 'Easy',
-      status: 'Draft',
+      status: 'Published',
       statement: '',
       inputFormat: '',
       outputFormat: '',
       explanation: '',
-      language: ['C++', 'Java', 'Python'], // Defaults
+      language: ['C++', 'Java', 'Python'],
       constraints: ['1 <= n <= 10^5'],
       testCases: [
         { id: 1, input: '', output: '', visibility: 'Sample' }
@@ -87,15 +101,16 @@ const ProblemForm = ({ initialData, onSubmit, onCancel, submitLabel }) => {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Course</label>
               <select
-                name="course"
-                value={formData.course}
+                required
+                name="courseId"
+                value={formData.courseId}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white"
               >
                 <option value="">Select Course</option>
-                <option value="Data Structures & Algorithms">Data Structures & Algorithms</option>
-                <option value="Algorithms">Algorithms</option>
-                <option value="Advanced Programming">Advanced Programming</option>
+                {courses.map(c => (
+                  <option key={c._id} value={c._id}>{c.courseName}</option>
+                ))}
               </select>
             </div>
             
@@ -217,7 +232,7 @@ const ProblemForm = ({ initialData, onSubmit, onCancel, submitLabel }) => {
                 <label key={lang} className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={(formData.language || []).includes(lang)}
+                    checked={(formData.language || formData.supportedLanguages || []).includes(lang)}
                     onChange={() => handleLanguageToggle(lang)}
                     className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
                   />

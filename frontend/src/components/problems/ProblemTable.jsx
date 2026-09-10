@@ -32,7 +32,7 @@ const ProblemTable = ({ problems, onDeleteClick }) => {
           <tbody>
             {problems.map((problem, index) => (
               <motion.tr
-                key={problem.id}
+                key={problem._id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2, delay: index * 0.05 }}
@@ -66,14 +66,14 @@ const ProblemTable = ({ problems, onDeleteClick }) => {
                 <td className="py-4 px-6">
                   <div className="flex items-center justify-end gap-1">
                     <Link
-                      to={`/problems/${problem.id}`}
+                      to={`/problems/${problem._id}`}
                       className="p-2 text-gray-400 hover:text-primary rounded-lg transition-colors"
                       title="View Details"
                     >
                       <Eye size={18} />
                     </Link>
                     <Link
-                      to={`/problems/edit/${problem.id}`}
+                      to={`/problems/edit/${problem._id}`}
                       className="p-2 text-gray-400 hover:text-primary rounded-lg transition-colors"
                       title="Edit Problem"
                     >

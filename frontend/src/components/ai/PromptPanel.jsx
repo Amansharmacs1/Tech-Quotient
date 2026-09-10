@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Sparkles } from 'lucide-react';
 
-const PromptPanel = ({ onGenerate, title, description, fields }) => {
-  const [formData, setFormData] = useState({});
+const PromptPanel = ({ onGenerate, title, description, fields, defaultValues = {} }) => {
+  const [formData, setFormData] = useState(defaultValues);
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -32,7 +32,7 @@ const PromptPanel = ({ onGenerate, title, description, fields }) => {
                   required
                   className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors"
                   onChange={(e) => handleChange(field.id, e.target.value)}
-                  defaultValue=""
+                  value={formData[field.id] || ""}
                 >
                   <option value="" disabled>Select {field.label}</option>
                   {field.options.map(opt => (
@@ -46,6 +46,7 @@ const PromptPanel = ({ onGenerate, title, description, fields }) => {
                   placeholder={`Enter ${field.label.toLowerCase()}`}
                   className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors"
                   onChange={(e) => handleChange(field.id, e.target.value)}
+                  value={formData[field.id] || ""}
                 />
               )}
             </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Edit2, Copy, Archive, CheckCircle2, Terminal, AlignLeft, Eye, EyeOff, Activity, Clock, Award, Target } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { globalProblems } from './Problems';
+import { getProblemById, deleteProblem } from '../../services/problemService';
 import DeleteProblemModal from '../../components/problems/DeleteProblemModal';
 
 const getDifficultyColor = (difficulty) => {
@@ -19,26 +19,33 @@ const ProblemDetails = () => {
   const navigate = useNavigate();
   const [problem, setProblem] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate API Fetch
-    const foundProblem = globalProblems.find(p => p.id === parseInt(id));
-    if (foundProblem) {
-      setProblem(foundProblem);
-    } else {
-      navigate('/problems');
-    }
+    const fetchProblem = async () => {
+      try {
+        setLoading(true);
+        const data = await getProblemById(id);
+        setProblem(data);
+      } catch (error) {
+        navigate('/problems');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProblem();
   }, [id, navigate]);
 
-  const handleDelete = () => {
-    const index = globalProblems.findIndex(p => p.id === parseInt(id));
-    if (index !== -1) {
-      globalProblems.splice(index, 1);
+  const handleDelete = async () => {
+    try {
+      await deleteProblem(id);
+      navigate('/problems');
+    } catch (error) {
+      console.error("Failed to delete problem:", error);
     }
-    navigate('/problems');
   };
 
-  if (!problem) return <div className="p-8 text-center">Loading...</div>;
+  if (loading || !problem) return <div className="p-8 text-center">Loading...</div>;
 
   const sampleTestCases = problem.testCases?.filter(tc => tc.visibility === 'Sample') || [];
   const hiddenTestCasesCount = problem.testCases?.filter(tc => tc.visibility === 'Hidden').length || 0;
@@ -71,17 +78,11 @@ const ProblemDetails = () => {
           </div>
           <div className="flex gap-2">
             <Link
-              to={`/problems/edit/${problem.id}`}
+              to={`/problems/edit/${problem._id}`}
               className="px-4 py-2 bg-white border border-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
             >
               <Edit2 size={16} /> Edit
             </Link>
-            <button className="px-4 py-2 bg-white border border-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2">
-              <Copy size={16} /> Duplicate
-            </button>
-            <button className="px-4 py-2 bg-white border border-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2">
-              <Archive size={16} /> Archive
-            </button>
             <button 
               onClick={() => setIsDeleteModalOpen(true)}
               className="px-4 py-2 bg-red-50 border border-red-100 text-red-600 font-medium rounded-lg hover:bg-red-100 transition-colors"

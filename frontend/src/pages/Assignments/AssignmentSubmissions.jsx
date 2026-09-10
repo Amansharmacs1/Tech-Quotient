@@ -2,20 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, CheckCircle2, Clock, XCircle, Search, Eye } from 'lucide-react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { globalAssignments } from './Assignments';
-
-// Dummy data for submissions (simulating an API call based on assignment ID)
-const dummySubmissions = [
-  { id: 1, student: "Aman Sharma", submittedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), score: 92, status: "Completed" },
-  { id: 2, student: "Rahul Verma", submittedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), score: 76, status: "Completed" },
-  { id: 3, student: "Priya Singh", submittedAt: null, score: null, status: "Pending" },
-  { id: 4, student: "Amit Kumar", submittedAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(), score: 45, status: "Failed" },
-  { id: 5, student: "Neha Gupta", submittedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), score: 100, status: "Completed" },
-];
+import { getAssignmentById } from '../../services/assignmentService';
+import { getSubmissions } from '../../services/submissionService';
 
 const getStatusBadge = (status) => {
   switch(status) {
-    case 'Completed': return <span className="flex items-center gap-1 text-xs font-semibold text-green-700 bg-green-100 px-2.5 py-1 rounded-md"><CheckCircle2 size={14} /> Completed</span>;
+    case 'Passed': return <span className="flex items-center gap-1 text-xs font-semibold text-green-700 bg-green-100 px-2.5 py-1 rounded-md"><CheckCircle2 size={14} /> Passed</span>;
     case 'Pending': return <span className="flex items-center gap-1 text-xs font-semibold text-yellow-700 bg-yellow-100 px-2.5 py-1 rounded-md"><Clock size={14} /> Pending</span>;
     case 'Failed': return <span className="flex items-center gap-1 text-xs font-semibold text-red-700 bg-red-100 px-2.5 py-1 rounded-md"><XCircle size={14} /> Failed</span>;
     default: return null;
@@ -26,21 +18,34 @@ const AssignmentSubmissions = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [assignment, setAssignment] = useState(null);
+  const [submissions, setSubmissions] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    const foundAssignment = globalAssignments.find(a => a.id === parseInt(id));
-    if (foundAssignment) {
-      setAssignment(foundAssignment);
-    } else {
-      navigate('/assignments');
-    }
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [assignmentData, submissionsData] = await Promise.all([
+          getAssignmentById(id),
+          getSubmissions({ assignmentId: id })
+        ]);
+        setAssignment(assignmentData);
+        setSubmissions(submissionsData);
+      } catch (err) {
+        navigate('/assignments');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, [id, navigate]);
 
-  if (!assignment) return <div className="p-8 text-center">Loading...</div>;
+  if (loading) return <div className="p-8 text-center">Loading...</div>;
+  if (!assignment) return <div className="p-8 text-center text-red-500">Assignment not found</div>;
 
-  const filteredSubmissions = dummySubmissions.filter(sub => 
-    sub.student.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredSubmissions = submissions.filter(sub => 
+    sub.studentId?.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -88,20 +93,26 @@ const AssignmentSubmissions = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredSubmissions.map((sub, index) => (
-                <tr key={sub.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+              {filteredSubmissions.map((sub, index) => {
+                const studentName = sub.studentId?.name || 'Unknown Student';
+                return (
+                <tr key={sub._id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
                   <td className="py-4 px-6 font-medium text-gray-900 flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
-                      {sub.student.charAt(0)}
+                    <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm overflow-hidden">
+                      {sub.studentId?.profileImage ? (
+                        <img src={sub.studentId.profileImage} alt={studentName} className="w-full h-full object-cover" />
+                      ) : (
+                        studentName.charAt(0).toUpperCase()
+                      )}
                     </div>
-                    {sub.student}
+                    {studentName}
                   </td>
                   <td className="py-4 px-6 text-gray-500">
-                    {sub.submittedAt ? new Date(sub.submittedAt).toLocaleString() : '-'}
+                    {sub.submittedAt ? new Date(sub.submittedAt).toLocaleString() : new Date(sub.createdAt).toLocaleString()}
                   </td>
                   <td className="py-4 px-6">
-                    {sub.score !== null ? (
-                      <span className="font-semibold text-gray-900">{sub.score} / {assignment.maxMarks}</span>
+                    {sub.score !== undefined && sub.score !== null ? (
+                      <span className="font-semibold text-gray-900">{sub.score} / {assignment.maximumMarks}</span>
                     ) : (
                       <span className="text-gray-400">-</span>
                     )}
@@ -122,7 +133,7 @@ const AssignmentSubmissions = () => {
                     </button>
                   </td>
                 </tr>
-              ))}
+              )})}
               {filteredSubmissions.length === 0 && (
                 <tr>
                   <td colSpan="5" className="py-8 text-center text-gray-500">

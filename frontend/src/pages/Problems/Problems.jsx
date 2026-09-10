@@ -9,14 +9,12 @@ import ProblemTable from '../../components/problems/ProblemTable';
 import EmptyProblemState from '../../components/problems/EmptyProblemState';
 import DeleteProblemModal from '../../components/problems/DeleteProblemModal';
 
-// Dummy Data export from phase 1
-import { problemsData } from '../../data/problems';
-
-// Use a simulated global variable to persist state between route changes
-let globalProblems = [...problemsData];
+import { getProblems, deleteProblem } from '../../services/problemService';
 
 const Problems = () => {
-  const [problems, setProblems] = useState(globalProblems);
+  const [problems, setProblems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [viewMode, setViewMode] = useState('grid');
   
   // Filters state
@@ -31,25 +29,37 @@ const Problems = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [problemToDelete, setProblemToDelete] = useState(null);
 
-  // Sync to global memory when local state changes (simulate DB)
-  useEffect(() => {
-    globalProblems = [...problems];
-  }, [problems]);
+  const fetchProblems = async () => {
+    try {
+      setLoading(true);
+      const data = await getProblems();
+      setProblems(data);
+    } catch (err) {
+      setError('Unable to load problems');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Derived state (Filtering & Sorting)
+  useEffect(() => {
+    fetchProblems();
+  }, []);
+
+  // Derived state (Filtering & Sorting locally for instant UI response)
   const filteredProblems = problems.filter(problem => {
     const matchesSearch = problem.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          problem.topic.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCourse = filterCourse ? problem.course === filterCourse : true;
+                          (problem.topic && problem.topic.toLowerCase().includes(searchTerm.toLowerCase()));
+    const courseName = problem.courseId?.courseName || '';
+    const matchesCourse = filterCourse ? courseName === filterCourse : true;
     const matchesDifficulty = filterDifficulty ? problem.difficulty === filterDifficulty : true;
     const matchesTopic = filterTopic ? problem.topic === filterTopic : true;
     const matchesStatus = filterStatus ? problem.status === filterStatus : true;
 
     return matchesSearch && matchesCourse && matchesDifficulty && matchesTopic && matchesStatus;
   }).sort((a, b) => {
-    if (sortBy === 'newest') return b.id - a.id;
-    if (sortBy === 'oldest') return a.id - b.id;
-    if (sortBy === 'submissions') return b.submissions - a.submissions;
+    if (sortBy === 'newest') return new Date(b.createdAt) - new Date(a.createdAt);
+    if (sortBy === 'oldest') return new Date(a.createdAt) - new Date(b.createdAt);
+    if (sortBy === 'submissions') return (b.submissions || 0) - (a.submissions || 0);
     if (sortBy === 'difficulty') {
       const difficultyOrder = { 'Easy': 1, 'Medium': 2, 'Hard': 3 };
       return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
@@ -62,11 +72,16 @@ const Problems = () => {
     setIsDeleteModalOpen(true);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (problemToDelete) {
-      setProblems(prev => prev.filter(p => p.id !== problemToDelete.id));
-      setProblemToDelete(null);
-      setIsDeleteModalOpen(false);
+      try {
+        await deleteProblem(problemToDelete._id);
+        setProblems(prev => prev.filter(p => p._id !== problemToDelete._id));
+        setProblemToDelete(null);
+        setIsDeleteModalOpen(false);
+      } catch (err) {
+        alert('Failed to delete problem');
+      }
     }
   };
 
@@ -118,7 +133,15 @@ const Problems = () => {
       />
 
       {/* Main Content Area */}
-      {problems.length === 0 ? (
+      {loading ? (
+        <div className="text-center py-12 text-gray-500 bg-white rounded-xl border border-gray-100">
+          Loading problems...
+        </div>
+      ) : error ? (
+        <div className="text-center py-12 text-red-500 bg-red-50 rounded-xl border border-red-100">
+          {error}
+        </div>
+      ) : problems.length === 0 ? (
         <EmptyProblemState />
       ) : filteredProblems.length === 0 ? (
         <div className="bg-white rounded-xl p-12 text-center border border-gray-100 shadow-sm">
@@ -144,7 +167,7 @@ const Problems = () => {
             >
               {filteredProblems.map(problem => (
                 <ProblemCard 
-                  key={problem.id} 
+                  key={problem._id} 
                   problem={problem} 
                   onDeleteClick={handleDeleteClick} 
                 />
@@ -178,4 +201,3 @@ const Problems = () => {
 };
 
 export default Problems;
-export { globalProblems };

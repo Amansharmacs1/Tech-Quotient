@@ -2,43 +2,47 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Edit2, Send, Users, CheckCircle2, Target, BarChart2, Calendar, Clock, Award, FileCode2 } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { globalAssignments } from './Assignments';
-import { problemsData } from '../../data/problems';
 import PublishModal from '../../components/assignments/PublishModal';
+import { getAssignmentById, updateAssignment } from '../../services/assignmentService';
 
 const AssignmentDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [assignment, setAssignment] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
 
   useEffect(() => {
-    // Simulate API Fetch
-    const foundAssignment = globalAssignments.find(a => a.id === parseInt(id));
-    if (foundAssignment) {
-      setAssignment(foundAssignment);
-    } else {
-      navigate('/assignments');
-    }
+    const fetchAssignment = async () => {
+      try {
+        const data = await getAssignmentById(id);
+        setAssignment(data);
+      } catch (err) {
+        navigate('/assignments');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAssignment();
   }, [id, navigate]);
 
-  const handlePublish = () => {
-    const index = globalAssignments.findIndex(a => a.id === parseInt(id));
-    if (index !== -1) {
-      globalAssignments[index].status = 'Published';
+  const handlePublish = async () => {
+    try {
+      await updateAssignment(id, { status: 'Published' });
       setAssignment({ ...assignment, status: 'Published' });
+      setIsPublishModalOpen(false);
+    } catch (err) {
+      alert('Failed to publish');
     }
-    setIsPublishModalOpen(false);
   };
 
-  if (!assignment) return <div className="p-8 text-center">Loading...</div>;
+  if (loading) return <div className="p-8 text-center">Loading...</div>;
+  if (!assignment) return <div className="p-8 text-center text-red-500">Assignment not found</div>;
 
   const isDraft = assignment.status === 'Draft';
   
-  // Resolve the actual problem objects from the IDs
-  const attachedProblems = assignment.problemIds 
-    ? assignment.problemIds.map(pid => problemsData.find(p => p.id === pid)).filter(Boolean)
-    : [];
+  // Resolve the actual problem objects from the populated IDs
+  const attachedProblems = assignment.problemIds || [];
 
   return (
     <div className="max-w-7xl mx-auto pb-12">
@@ -61,17 +65,17 @@ const AssignmentDetails = () => {
                 {assignment.status}
               </span>
             </div>
-            <p className="text-gray-500 font-medium">{assignment.course}</p>
+            <p className="text-gray-500 font-medium">{assignment.courseId?.courseName}</p>
           </div>
           <div className="flex gap-2">
             <Link
-              to={`/assignments/edit/${assignment.id}`}
+              to={`/assignments/edit/${assignment._id}`}
               className="px-4 py-2 bg-white border border-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
             >
               <Edit2 size={16} /> Edit
             </Link>
             <Link
-              to={`/assignments/${assignment.id}/submissions`}
+              to={`/assignments/${assignment._id}/submissions`}
               className="px-4 py-2 bg-white border border-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
             >
               <Users size={16} /> View Submissions
@@ -103,15 +107,15 @@ const AssignmentDetails = () => {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500 flex items-center gap-1.5 mb-1"><Clock size={16} /> Time Limit</p>
-                <p className="font-semibold text-gray-900">{assignment.timeLimit} mins</p>
+                <p className="font-semibold text-gray-900">{assignment.duration} mins</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500 flex items-center gap-1.5 mb-1"><Award size={16} /> Max Marks</p>
-                <p className="font-semibold text-gray-900">{assignment.maxMarks}</p>
+                <p className="font-semibold text-gray-900">{assignment.maximumMarks}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500 flex items-center gap-1.5 mb-1"><Target size={16} /> Attempts</p>
-                <p className="font-semibold text-gray-900">{assignment.attempts}</p>
+                <p className="font-semibold text-gray-900">{assignment.attemptsAllowed}</p>
               </div>
             </div>
 
@@ -133,7 +137,7 @@ const AssignmentDetails = () => {
             <div className="space-y-4">
               {attachedProblems.length > 0 ? (
                 attachedProblems.map((problem, index) => (
-                  <div key={problem.id} className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-xl hover:border-primary/30 transition-colors">
+                  <div key={problem._id || problem.id} className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-xl hover:border-primary/30 transition-colors">
                     <div className="flex items-center gap-4">
                       <div className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center font-bold text-gray-500 shadow-sm text-sm">
                         {index + 1}
@@ -144,7 +148,7 @@ const AssignmentDetails = () => {
                       </div>
                     </div>
                     <Link
-                      to={`/problems/${problem.id}`}
+                      to={`/problems/${problem._id || problem.id}`}
                       className="px-3 py-1.5 bg-white border border-gray-200 text-sm font-medium text-primary rounded-lg hover:bg-gray-50 transition-colors"
                     >
                       View Problem
@@ -205,7 +209,7 @@ const AssignmentDetails = () => {
             </div>
             
             <Link 
-              to={`/assignments/${assignment.id}/submissions`}
+              to={`/assignments/${assignment._id}/submissions`}
               className="mt-6 w-full block text-center px-4 py-2 bg-primary/10 text-primary font-medium rounded-lg hover:bg-primary/20 transition-colors"
             >
               View Full Analytics

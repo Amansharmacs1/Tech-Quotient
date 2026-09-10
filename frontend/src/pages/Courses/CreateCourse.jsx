@@ -2,23 +2,18 @@ import React from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import CourseForm from '../../components/course/CourseForm';
-import { addGlobalCourse } from './Courses';
+import { createCourse } from '../../services/courseService';
 
 const CreateCourse = () => {
   const navigate = useNavigate();
 
-  const handleCreate = (formData) => {
-    // Generate dummy ID
-    const newCourse = {
-      ...formData,
-      id: Date.now(),
-      students: 0,
-      assignments: 0,
-      problems: 0
-    };
-    
-    addGlobalCourse(newCourse);
-    navigate('/courses');
+  const handleCreate = async (formData) => {
+    try {
+      await createCourse(formData);
+      navigate('/courses');
+    } catch (error) {
+      alert('Failed to create course. Please check required fields.');
+    }
   };
 
   return (

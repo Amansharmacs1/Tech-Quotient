@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import ProblemForm from '../../components/problems/ProblemForm';
-import { globalProblems } from './Problems';
+import { getProblemById, updateProblem } from '../../services/problemService';
 
 const EditProblem = () => {
   const { id } = useParams();
@@ -11,25 +11,24 @@ const EditProblem = () => {
   const [problemData, setProblemData] = useState(null);
 
   useEffect(() => {
-    // Simulate API Fetch
-    const problem = globalProblems.find(p => p.id === parseInt(id));
-    if (problem) {
-      setProblemData(problem);
-    } else {
-      // Not found, redirect back
-      navigate('/problems');
-    }
+    const fetchProblem = async () => {
+      try {
+        const data = await getProblemById(id);
+        setProblemData(data);
+      } catch (err) {
+        navigate('/problems');
+      }
+    };
+    fetchProblem();
   }, [id, navigate]);
 
-  const handleUpdate = (updatedData) => {
-    // Simulate API Update
-    const index = globalProblems.findIndex(p => p.id === parseInt(id));
-    if (index !== -1) {
-      globalProblems[index] = { ...updatedData, id: parseInt(id) };
+  const handleUpdate = async (updatedData) => {
+    try {
+      await updateProblem(id, updatedData);
+      navigate('/problems');
+    } catch (err) {
+      alert('Failed to update problem.');
     }
-    
-    // Navigate back to listing
-    navigate('/problems');
   };
 
   if (!problemData) return <div className="p-8 text-center">Loading...</div>;

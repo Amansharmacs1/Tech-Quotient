@@ -26,7 +26,7 @@ const StudentTable = ({ students }) => {
           <tbody>
             {students.map((student, index) => (
               <motion.tr
-                key={student.id}
+                key={student._id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2, delay: index * 0.05 }}
@@ -40,7 +40,7 @@ const StudentTable = ({ students }) => {
                     {student.name}
                   </div>
                 </td>
-                <td className="py-4 px-6 text-gray-500 font-mono text-sm">{student.rollNo}</td>
+                <td className="py-4 px-6 text-gray-500 font-mono text-sm">{student.rollNumber}</td>
                 <td className="py-4 px-6 text-gray-500 truncate max-w-[150px]" title={student.course}>
                   {student.course}
                 </td>
@@ -58,7 +58,7 @@ const StudentTable = ({ students }) => {
                 <td className="py-4 px-6">
                   <div className="flex items-center justify-end gap-1">
                     <Link
-                      to={`/students/${student.id}`}
+                      to={`/students/${student._id}`}
                       className="p-2 text-gray-400 hover:text-primary rounded-lg transition-colors"
                       title="View Profile"
                     >

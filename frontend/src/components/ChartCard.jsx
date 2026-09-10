@@ -26,19 +26,21 @@ const lineData = [
   { name: 'Week 4', accuracy: 88 },
 ];
 
-export default function ChartCard({ type }) {
+export default function ChartCard({ type, data }) {
   const isBar = type === 'bar';
   
+  const actualData = data || (isBar ? barData : lineData);
+
   return (
     <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 h-full flex flex-col">
       <h3 className="text-lg font-semibold text-secondary mb-6">
-        {isBar ? 'Problems Solved' : 'Submission Accuracy'}
+        {isBar ? 'Active Submissions' : 'Average Score'}
       </h3>
       
       <div className="flex-1 w-full h-[250px]">
         <ResponsiveContainer width="100%" height="100%">
           {isBar ? (
-            <BarChart data={barData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+            <BarChart data={actualData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
               <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} />
               <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} />
@@ -46,17 +48,17 @@ export default function ChartCard({ type }) {
                 cursor={{ fill: '#FFF1E8' }}
                 contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
               />
-              <Bar dataKey="solved" fill="#F26422" radius={[4, 4, 0, 0]} barSize={30} />
+              <Bar dataKey={data ? "active" : "solved"} fill="#F26422" radius={[4, 4, 0, 0]} barSize={30} />
             </BarChart>
           ) : (
-            <LineChart data={lineData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+            <LineChart data={actualData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
               <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} />
               <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} />
               <Tooltip 
                 contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
               />
-              <Line type="monotone" dataKey="accuracy" stroke="#F26422" strokeWidth={3} dot={{ r: 4, fill: '#F26422' }} activeDot={{ r: 6 }} />
+              <Line type="monotone" dataKey={data ? "score" : "accuracy"} stroke="#F26422" strokeWidth={3} dot={{ r: 4, fill: '#F26422' }} activeDot={{ r: 6 }} />
             </LineChart>
           )}
         </ResponsiveContainer>

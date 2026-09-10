@@ -2,23 +2,29 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Edit2, Users, FileText, Code2, LineChart, Plus, FileEdit, BarChart2 } from 'lucide-react';
-import { getGlobalCourses } from './Courses';
+import { getCourseById } from '../../services/courseService';
 
 const CourseDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [course, setCourse] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const courses = getGlobalCourses();
-    const foundCourse = courses.find(c => c.id === parseInt(id));
-    if (foundCourse) {
-      setCourse(foundCourse);
-    } else {
-      navigate('/courses');
-    }
+    const fetchCourse = async () => {
+      try {
+        const data = await getCourseById(id);
+        setCourse(data);
+      } catch (err) {
+        navigate('/courses');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCourse();
   }, [id, navigate]);
 
+  if (loading) return <div className="text-center py-12">Loading course details...</div>;
   if (!course) return null;
 
   return (
@@ -44,7 +50,7 @@ const CourseDetails = () => {
             <h1 className="text-3xl font-bold text-secondary">{course.courseName}</h1>
           </div>
           <Link
-            to={`/courses/edit/${course.id}`}
+            to={`/courses/edit/${course._id}`}
             className="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 shadow-sm"
           >
             <Edit2 size={18} />
@@ -132,31 +138,7 @@ const CourseDetails = () => {
           </motion.div>
         </div>
 
-        {/* Right Column - Quick Actions */}
-        <div className="space-y-6">
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6"
-          >
-            <h3 className="text-lg font-bold text-secondary mb-4">Quick Actions</h3>
-            <div className="space-y-3">
-              <button className="w-full py-3 px-4 bg-accent text-primary font-medium rounded-lg hover:bg-primary/20 transition-colors flex items-center gap-3">
-                <Plus size={18} />
-                Add New Problem
-              </button>
-              <button className="w-full py-3 px-4 bg-gray-50 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors border border-gray-200 flex items-center gap-3">
-                <FileEdit size={18} />
-                Create Assignment
-              </button>
-              <button className="w-full py-3 px-4 bg-gray-50 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors border border-gray-200 flex items-center gap-3">
-                <BarChart2 size={18} />
-                View Detailed Analytics
-              </button>
-            </div>
-          </motion.div>
-        </div>
+
       </div>
     </div>
   );

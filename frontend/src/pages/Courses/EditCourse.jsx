@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import CourseForm from '../../components/course/CourseForm';
-import { getGlobalCourses, updateGlobalCourse } from './Courses';
+import { getCourseById, updateCourse } from '../../services/courseService';
 
 const EditCourse = () => {
   const { id } = useParams();
@@ -10,18 +10,24 @@ const EditCourse = () => {
   const [course, setCourse] = useState(null);
 
   useEffect(() => {
-    const courses = getGlobalCourses();
-    const foundCourse = courses.find(c => c.id === parseInt(id));
-    if (foundCourse) {
-      setCourse(foundCourse);
-    } else {
-      navigate('/courses');
-    }
+    const fetchCourse = async () => {
+      try {
+        const data = await getCourseById(id);
+        setCourse(data);
+      } catch (err) {
+        navigate('/courses');
+      }
+    };
+    fetchCourse();
   }, [id, navigate]);
 
-  const handleUpdate = (formData) => {
-    updateGlobalCourse(parseInt(id), formData);
-    navigate('/courses');
+  const handleUpdate = async (formData) => {
+    try {
+      await updateCourse(id, formData);
+      navigate('/courses');
+    } catch (err) {
+      alert('Failed to update course.');
+    }
   };
 
   if (!course) return null;

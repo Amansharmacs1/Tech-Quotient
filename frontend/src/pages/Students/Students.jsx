@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutGrid, List, Download } from 'lucide-react';
 import StudentStats from '../../components/students/StudentStats';
@@ -6,12 +6,12 @@ import StudentFilters from '../../components/students/StudentFilters';
 import StudentCard from '../../components/students/StudentCard';
 import StudentTable from '../../components/students/StudentTable';
 import EmptyStudentState from '../../components/students/EmptyStudentState';
-
-// Dummy Data
-import { studentsData } from '../../data/students';
+import { getStudents } from '../../services/studentService';
 
 const Students = () => {
-  const [students] = useState(studentsData);
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [viewMode, setViewMode] = useState('grid');
   
   // Filters state
@@ -20,19 +20,39 @@ const Students = () => {
   const [filterStatus, setFilterStatus] = useState('');
   const [sortBy, setSortBy] = useState('name');
 
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        setLoading(true);
+        const data = await getStudents();
+        setStudents(data);
+      } catch (err) {
+        setError('Unable to load students');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStudents();
+  }, []);
+
   // Derived state
   const filteredStudents = students.filter(student => {
     const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          student.rollNo.includes(searchTerm) ||
+                          student.rollNumber.includes(searchTerm) ||
                           student.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCourse = filterCourse ? student.course === filterCourse : true;
+    
+    // Check if enrolledCourses array contains the filter course (assuming filterCourse is a courseName)
+    const matchesCourse = filterCourse ? student.enrolledCourses?.some(c => c.courseName === filterCourse) : true;
     const matchesStatus = filterStatus ? student.status === filterStatus : true;
 
     return matchesSearch && matchesCourse && matchesStatus;
   }).sort((a, b) => {
     if (sortBy === 'name') return a.name.localeCompare(b.name);
-    if (sortBy === 'highestScore') return b.averageScore - a.averageScore;
-    if (sortBy === 'lowestScore') return a.averageScore - b.averageScore;
+    // Dummy averageScore logic - if real db doesn't have it yet, map it to 0
+    const aScore = a.averageScore || 0;
+    const bScore = b.averageScore || 0;
+    if (sortBy === 'highestScore') return bScore - aScore;
+    if (sortBy === 'lowestScore') return aScore - bScore;
     return 0;
   });
 
@@ -62,7 +82,14 @@ const Students = () => {
             </button>
           </div>
           <button
-            onClick={() => alert('Student Report downloaded successfully!')}
+            onClick={() => {
+              const blob = new Blob(['Student Report Data'], { type: 'text/csv' });
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `students_report.csv`;
+              a.click();
+            }}
             className="px-6 py-2.5 bg-white border border-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all flex items-center gap-2 shadow-sm"
           >
             <Download size={20} />
@@ -80,7 +107,15 @@ const Students = () => {
         sortBy={sortBy} setSortBy={setSortBy}
       />
 
-      {students.length === 0 ? (
+      {loading ? (
+        <div className="text-center py-12 text-gray-500 bg-white rounded-xl border border-gray-100">
+          Loading students...
+        </div>
+      ) : error ? (
+        <div className="text-center py-12 text-red-500 bg-red-50 rounded-xl border border-red-100">
+          {error}
+        </div>
+      ) : students.length === 0 ? (
         <EmptyStudentState />
       ) : filteredStudents.length === 0 ? (
         <div className="bg-white rounded-xl p-12 text-center border border-gray-100 shadow-sm min-h-[300px] flex flex-col items-center justify-center">
@@ -105,7 +140,7 @@ const Students = () => {
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
             >
               {filteredStudents.map(student => (
-                <StudentCard key={student.id} student={student} />
+                <StudentCard key={student._id} student={student} />
               ))}
             </motion.div>
           ) : (

@@ -1,12 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import AnalyticsStats from '../../components/analytics/AnalyticsStats';
 import PerformanceOverview from '../../components/analytics/PerformanceOverview';
 import StudentPerformanceChart from '../../components/analytics/StudentPerformanceChart';
 import DateFilter from '../../components/analytics/DateFilter';
 import { Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { getFullAnalytics } from '../../services/analyticsService';
 
 const Analytics = () => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await getFullAnalytics();
+        setData(result);
+      } catch (err) {
+        console.error('Error fetching analytics:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <div className="max-w-7xl mx-auto pb-12">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
@@ -28,7 +46,7 @@ const Analytics = () => {
 
       <AnalyticsStats />
       
-      <PerformanceOverview />
+      <PerformanceOverview data={data?.weeklyActivity} />
 
       <div className="mb-8">
         <h2 className="text-xl font-bold text-secondary mb-4">Quick Navigation</h2>
@@ -45,7 +63,7 @@ const Analytics = () => {
         </div>
       </div>
 
-      <StudentPerformanceChart />
+      <StudentPerformanceChart data={data?.topicPerformance} />
     </div>
   );
 };

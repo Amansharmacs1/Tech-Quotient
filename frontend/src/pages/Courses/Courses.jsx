@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, LayoutGrid, List } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { getCourses, deleteCourse } from '../../services/courseService';
 
-import { coursesData } from '../../data/courses';
 import CourseStats from '../../components/course/CourseStats';
 import SearchFilter from '../../components/course/SearchFilter';
 import CourseCard from '../../components/course/CourseCard';
@@ -11,12 +10,10 @@ import CourseTable from '../../components/course/CourseTable';
 import EmptyCourseState from '../../components/course/EmptyCourseState';
 import DeleteCourseModal from '../../components/course/DeleteCourseModal';
 
-// We simulate a global store by holding the list outside component scope just for this demo session
-// so that creates/edits persist across unmounts without context.
-let globalCourses = [...coursesData];
-
 const Courses = () => {
-  const [courses, setCourses] = useState(globalCourses);
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [viewMode, setViewMode] = useState('grid');
   
   const [searchTerm, setSearchTerm] = useState('');
@@ -27,9 +24,20 @@ const Courses = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [courseToDelete, setCourseToDelete] = useState(null);
 
-  // Synchronize when coming back from other pages
+  const fetchCourses = async () => {
+    try {
+      setLoading(true);
+      const data = await getCourses();
+      setCourses(data);
+    } catch (err) {
+      setError('Unable to load courses.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    setCourses(globalCourses);
+    fetchCourses();
   }, []);
 
   const handleDeleteClick = (course) => {
@@ -37,27 +45,29 @@ const Courses = () => {
     setDeleteModalOpen(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (courseToDelete) {
-      const newCourses = courses.filter(c => c.id !== courseToDelete.id);
-      globalCourses = newCourses; // update simulated DB
-      setCourses(newCourses);
-      setDeleteModalOpen(false);
-      setCourseToDelete(null);
+      try {
+        await deleteCourse(courseToDelete._id);
+        setCourses(courses.filter(c => c._id !== courseToDelete._id));
+        setDeleteModalOpen(false);
+        setCourseToDelete(null);
+      } catch (err) {
+        alert('Failed to delete course');
+      }
     }
   };
 
-  // Filter and Sort Logic
+  // Filter and Sort Logic (client-side for now, could be moved to server)
   const filteredCourses = courses.filter(course => {
     const matchesSearch = course.courseName.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           course.courseCode.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus ? course.status === filterStatus : true;
-    const matchesSemester = filterSemester ? course.semester.toString() === filterSemester : true;
+    const matchesSemester = filterSemester ? course.semester === filterSemester : true;
     return matchesSearch && matchesStatus && matchesSemester;
   }).sort((a, b) => {
     if (sortBy === 'name') return a.courseName.localeCompare(b.courseName);
-    if (sortBy === 'students') return b.students - a.students;
-    if (sortBy === 'semester') return a.semester.toString().localeCompare(b.semester.toString());
+    if (sortBy === 'semester') return (a.semester || '').localeCompare(b.semester || '');
     return 0;
   });
 
@@ -108,7 +118,15 @@ const Courses = () => {
       )}
 
       {/* Course Display */}
-      {courses.length === 0 ? (
+      {loading ? (
+        <div className="text-center py-12 text-gray-500 bg-white rounded-xl border border-gray-100">
+          Loading courses...
+        </div>
+      ) : error ? (
+        <div className="text-center py-12 text-red-500 bg-red-50 rounded-xl border border-red-100">
+          {error}
+        </div>
+      ) : courses.length === 0 ? (
         <EmptyCourseState />
       ) : filteredCourses.length === 0 ? (
         <div className="text-center py-12 text-gray-500 bg-white rounded-xl border border-gray-100">
@@ -118,7 +136,7 @@ const Courses = () => {
         viewMode === 'grid' ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredCourses.map(course => (
-              <CourseCard key={course.id} course={course} onDeleteClick={handleDeleteClick} />
+              <CourseCard key={course._id} course={course} onDeleteClick={handleDeleteClick} />
             ))}
           </div>
         ) : (
@@ -134,13 +152,6 @@ const Courses = () => {
       />
     </div>
   );
-};
-
-export const getGlobalCourses = () => globalCourses;
-export const addGlobalCourse = (course) => globalCourses.push(course);
-export const updateGlobalCourse = (id, updated) => {
-  const index = globalCourses.findIndex(c => c.id === id);
-  if (index !== -1) globalCourses[index] = { ...globalCourses[index], ...updated };
 };
 
 export default Courses;

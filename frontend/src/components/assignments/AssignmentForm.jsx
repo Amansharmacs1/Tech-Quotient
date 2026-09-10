@@ -1,22 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Save, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ProblemSelector from './ProblemSelector';
+import { getCourses } from '../../services/courseService';
 
 const AssignmentForm = ({ initialData, onSubmit, onCancel, submitLabel }) => {
   const navigate = useNavigate();
+  const [courses, setCourses] = useState([]);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const data = await getCourses();
+        setCourses(data);
+      } catch (err) {
+        console.error('Failed to load courses');
+      }
+    };
+    fetchCourses();
+  }, []);
 
   const [formData, setFormData] = useState(
     initialData || {
       title: '',
-      course: '',
+      courseId: '',
       description: '',
       problemIds: [],
-      deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Next week
-      timeLimit: 120,
-      maxMarks: 100,
-      attempts: 'Unlimited',
+      deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      duration: 120, // DB model expects 'duration' not 'timeLimit'
+      maximumMarks: 100, // DB model expects 'maximumMarks'
+      attemptsAllowed: 1, // DB model expects Number
       status: 'Draft',
       submissions: 0,
     }
@@ -73,16 +87,15 @@ const AssignmentForm = ({ initialData, onSubmit, onCancel, submitLabel }) => {
               <label className="block text-sm font-medium text-gray-700 mb-1">Course *</label>
               <select
                 required
-                name="course"
-                value={formData.course}
+                name="courseId"
+                value={formData.courseId}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white"
               >
                 <option value="">Select Course</option>
-                <option value="Data Structures & Algorithms">Data Structures & Algorithms</option>
-                <option value="Algorithms">Algorithms</option>
-                <option value="Database Management Systems">Database Management Systems</option>
-                <option value="Advanced Programming">Advanced Programming</option>
+                {courses.map(c => (
+                  <option key={c._id} value={c._id}>{c.courseName}</option>
+                ))}
               </select>
             </div>
             
@@ -108,6 +121,7 @@ const AssignmentForm = ({ initialData, onSubmit, onCancel, submitLabel }) => {
           <ProblemSelector 
             selectedProblemIds={formData.problemIds} 
             onChange={handleProblemSelection} 
+            courseId={formData.courseId} // Pass down to filter problems by course
           />
         </div>
 
@@ -122,7 +136,7 @@ const AssignmentForm = ({ initialData, onSubmit, onCancel, submitLabel }) => {
                 required
                 type="date"
                 name="deadline"
-                value={formData.deadline}
+                value={formData.deadline ? formData.deadline.substring(0, 10) : ''}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm"
               />
@@ -134,8 +148,8 @@ const AssignmentForm = ({ initialData, onSubmit, onCancel, submitLabel }) => {
                 required
                 type="number"
                 min="1"
-                name="timeLimit"
-                value={formData.timeLimit}
+                name="duration"
+                value={formData.duration}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm"
               />
@@ -147,8 +161,8 @@ const AssignmentForm = ({ initialData, onSubmit, onCancel, submitLabel }) => {
                 required
                 type="number"
                 min="1"
-                name="maxMarks"
-                value={formData.maxMarks}
+                name="maximumMarks"
+                value={formData.maximumMarks}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm"
               />
@@ -156,17 +170,15 @@ const AssignmentForm = ({ initialData, onSubmit, onCancel, submitLabel }) => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Attempts Allowed *</label>
-              <select
+              <input
                 required
-                name="attempts"
-                value={formData.attempts}
+                type="number"
+                min="1"
+                name="attemptsAllowed"
+                value={formData.attemptsAllowed}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white text-sm"
-              >
-                <option value="Unlimited">Unlimited</option>
-                <option value="Single Attempt">Single Attempt</option>
-                <option value="3 Attempts">3 Attempts</option>
-              </select>
+              />
             </div>
 
             <div className="md:col-span-2">

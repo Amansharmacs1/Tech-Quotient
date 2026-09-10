@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import AssignmentForm from '../../components/assignments/AssignmentForm';
-import { globalAssignments } from './Assignments';
+import { getAssignmentById, updateAssignment } from '../../services/assignmentService';
 
 const EditAssignment = () => {
   const { id } = useParams();
@@ -11,25 +11,31 @@ const EditAssignment = () => {
   const [assignmentData, setAssignmentData] = useState(null);
 
   useEffect(() => {
-    // Simulate API Fetch
-    const assignment = globalAssignments.find(a => a.id === parseInt(id));
-    if (assignment) {
-      setAssignmentData(assignment);
-    } else {
-      // Not found, redirect back
-      navigate('/assignments');
-    }
+    const fetchAssignment = async () => {
+      try {
+        const data = await getAssignmentById(id);
+        // Normalize populated data for the form
+        if (data.courseId && typeof data.courseId === 'object') {
+          data.courseId = data.courseId._id;
+        }
+        if (data.problemIds && data.problemIds.length > 0 && typeof data.problemIds[0] === 'object') {
+          data.problemIds = data.problemIds.map(p => p._id);
+        }
+        setAssignmentData(data);
+      } catch (err) {
+        navigate('/assignments');
+      }
+    };
+    fetchAssignment();
   }, [id, navigate]);
 
-  const handleUpdate = (updatedData) => {
-    // Simulate API Update
-    const index = globalAssignments.findIndex(a => a.id === parseInt(id));
-    if (index !== -1) {
-      globalAssignments[index] = { ...updatedData, id: parseInt(id) };
+  const handleUpdate = async (updatedData) => {
+    try {
+      await updateAssignment(id, updatedData);
+      navigate('/assignments');
+    } catch (err) {
+      alert('Failed to update assignment');
     }
-    
-    // Navigate back to listing
-    navigate('/assignments');
   };
 
   if (!assignmentData) return <div className="p-8 text-center">Loading...</div>;

@@ -1,11 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import StatCard from '../components/StatCard';
 import ActivityCard from '../components/ActivityCard';
 import ChartCard from '../components/ChartCard';
 import AIInsightCard from '../components/AIInsightCard';
+import { getDashboardAnalytics } from '../services/analyticsService';
 
 export default function Dashboard() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await getDashboardAnalytics();
+        setData(result);
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <div className="max-w-7xl mx-auto space-y-8 animate-fade-in">
       {/* Header Section */}
@@ -16,18 +35,18 @@ export default function Dashboard() {
             Manage your courses, coding problems and student performance.
           </p>
         </div>
-        <button className="bg-gradient-primary hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 text-white px-6 py-3 rounded-full font-semibold flex items-center justify-center gap-2">
+        <Link to="/assignments/create" className="bg-gradient-primary hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 text-white px-6 py-3 rounded-full font-semibold flex items-center justify-center gap-2">
           <Plus className="w-5 h-5" />
           Create Assignment
-        </button>
+        </Link>
       </div>
 
       {/* Statistics Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard title="Total Students" value="250" subtitle="+12% this month" iconName="Users" trend="up" />
-        <StatCard title="Assignments" value="32" subtitle="Active assignments" iconName="Clipboard" trend="neutral" />
-        <StatCard title="Coding Problems" value="150" subtitle="Problems created" iconName="Code" trend="neutral" />
-        <StatCard title="Average Score" value="82%" subtitle="Overall performance" iconName="ChartBar" trend="neutral" />
+        <StatCard title="Total Students" value={loading ? '...' : data?.metrics?.totalStudents || 0} subtitle="Across all courses" iconName="Users" trend="neutral" />
+        <StatCard title="Assignments" value={loading ? '...' : data?.metrics?.activeAssignments || 0} subtitle="Active assignments" iconName="Clipboard" trend="neutral" />
+        <StatCard title="Active Courses" value={loading ? '...' : data?.metrics?.activeCourses || 0} subtitle="Courses created" iconName="Code" trend="neutral" />
+        <StatCard title="Average Score" value={loading ? '...' : `${data?.metrics?.avgClassScore || 0}%`} subtitle="Overall performance" iconName="ChartBar" trend="neutral" />
       </div>
 
       {/* Main Content Grid */}
@@ -36,8 +55,8 @@ export default function Dashboard() {
         {/* Charts - spans 2 columns on large screens */}
         <div className="lg:col-span-2 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-[350px]">
-             <ChartCard type="bar" />
-             <ChartCard type="line" />
+             <ChartCard type="bar" data={data?.performanceData} />
+             <ChartCard type="line" data={data?.performanceData} />
           </div>
         </div>
 
@@ -47,7 +66,7 @@ export default function Dashboard() {
              <AIInsightCard />
            </div>
            <div className="flex-1">
-             <ActivityCard />
+             <ActivityCard activities={data?.recentSubmissions || []} />
            </div>
         </div>
 

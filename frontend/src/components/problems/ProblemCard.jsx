@@ -62,14 +62,14 @@ const ProblemCard = ({ problem, onDeleteClick }) => {
         </div>
         <div className="flex gap-2">
           <Link
-            to={`/problems/${problem.id}`}
+            to={`/problems/${problem._id}`}
             className="p-2 text-gray-500 hover:text-primary hover:bg-accent rounded-lg transition-colors"
             title="View Details"
           >
             <Eye size={18} />
           </Link>
           <Link
-            to={`/problems/edit/${problem.id}`}
+            to={`/problems/edit/${problem._id}`}
             className="p-2 text-gray-500 hover:text-primary hover:bg-accent rounded-lg transition-colors"
             title="Edit Problem"
           >

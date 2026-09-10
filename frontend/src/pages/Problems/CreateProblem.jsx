@@ -3,21 +3,18 @@ import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import ProblemForm from '../../components/problems/ProblemForm';
-import { globalProblems } from './Problems';
+import { createProblem } from '../../services/problemService';
 
 const CreateProblem = () => {
   const navigate = useNavigate();
 
-  const handleCreate = (newProblemData) => {
-    // Generate a pseudo-ID
-    const newId = globalProblems.length > 0 ? Math.max(...globalProblems.map(p => p.id)) + 1 : 1;
-    const problem = { ...newProblemData, id: newId, submissions: 0 };
-    
-    // Simulate API Create
-    globalProblems.push(problem);
-    
-    // Navigate back to listing
-    navigate('/problems');
+  const handleCreate = async (newProblemData) => {
+    try {
+      await createProblem(newProblemData);
+      navigate('/problems');
+    } catch (err) {
+      alert('Failed to create problem. Please check required fields.');
+    }
   };
 
   return (

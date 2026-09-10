@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import PromptPanel from '../../components/ai/PromptPanel';
 import GeneratedProblemCard from '../../components/ai/GeneratedProblemCard';
 import LoadingAnimation from '../../components/ai/LoadingAnimation';
@@ -8,6 +8,7 @@ import EmptyAIState from '../../components/ai/EmptyAIState';
 import { generateProblem } from '../../services/aiService';
 
 const ProblemGenerator = () => {
+  const location = useLocation();
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedProblem, setGeneratedProblem] = useState(null);
   const [loadingText, setLoadingText] = useState("Understanding requirements...");
@@ -60,6 +61,7 @@ const ProblemGenerator = () => {
         description="Provide the context and our AI will generate complete coding problems including test cases and constraints."
         fields={fields}
         onGenerate={handleGenerate}
+        defaultValues={{ topic: location.state?.defaultTopic || '' }}
       />
 
       <div className="mt-8">

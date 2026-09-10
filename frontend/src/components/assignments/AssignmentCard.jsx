@@ -32,7 +32,7 @@ const AssignmentCard = ({ assignment, onDeleteClick, onPublishClick }) => {
         <div className="space-y-3 text-sm text-gray-500 mb-4">
           <div className="flex items-center gap-2">
             <Building2 size={16} className="text-gray-400 shrink-0" />
-            <span className="truncate" title={assignment.course}>{assignment.course}</span>
+            <span className="truncate" title={assignment.courseId?.courseName}>{assignment.courseId?.courseName}</span>
           </div>
           <div className="flex items-center gap-2">
             <FileCode2 size={16} className="text-gray-400 shrink-0" />
@@ -63,14 +63,14 @@ const AssignmentCard = ({ assignment, onDeleteClick, onPublishClick }) => {
             </button>
           )}
           <Link
-            to={`/assignments/${assignment.id}`}
+            to={`/assignments/${assignment._id}`}
             className="p-2 text-gray-500 hover:text-primary hover:bg-accent rounded-lg transition-colors"
             title="View Details"
           >
             <Eye size={18} />
           </Link>
           <Link
-            to={`/assignments/edit/${assignment.id}`}
+            to={`/assignments/edit/${assignment._id}`}
             className="p-2 text-gray-500 hover:text-primary hover:bg-accent rounded-lg transition-colors"
             title="Edit Assignment"
           >

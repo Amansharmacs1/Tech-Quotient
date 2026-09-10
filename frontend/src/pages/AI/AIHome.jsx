@@ -1,6 +1,6 @@
 import React from 'react';
 import { Sparkles, Code2, FileText, LineChart, MessageSquare, Clock, ArrowRight, Activity, Zap, CheckCircle2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const AIToolCard = ({ title, description, icon: Icon, path, colorClass }) => (
   <Link to={path} className="group block h-full">
@@ -18,6 +18,7 @@ const AIToolCard = ({ title, description, icon: Icon, path, colorClass }) => (
 );
 
 const AIHome = () => {
+  const navigate = useNavigate();
   const tools = [
     {
       title: 'AI Problem Generator',
@@ -50,11 +51,11 @@ const AIHome = () => {
   ];
 
   const quickActions = [
-    "Generate Array Problem",
-    "Analyze Class Performance",
-    "Create DSA Assignment",
-    "Find Weak Topics",
-    "Suggest Practice Problems"
+    { label: "Generate Array Problem", path: "/ai/problem-generator", state: { defaultTopic: "Arrays" } },
+    { label: "Analyze Class Performance", path: "/ai/student-insights", state: {} },
+    { label: "Create DSA Assignment", path: "/ai/assignment-generator", state: { defaultCourse: "Data Structures" } },
+    { label: "Find Weak Topics", path: "/ai/assistant", state: { defaultMessage: "What are the weakest topics for my students based on recent performance?" } },
+    { label: "Suggest Practice Problems", path: "/ai/assistant", state: { defaultMessage: "Suggest some good practice problems for Graph traversals." } }
   ];
 
   const recentActivity = [
@@ -107,8 +108,12 @@ const AIHome = () => {
             </h2>
             <div className="flex flex-wrap gap-3">
               {quickActions.map(action => (
-                <button key={action} className="px-4 py-2 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:border-primary hover:text-primary hover:bg-primary/5 transition-all text-sm shadow-sm">
-                  {action}
+                <button 
+                  key={action.label} 
+                  onClick={() => navigate(action.path, { state: action.state })}
+                  className="px-4 py-2 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:border-primary hover:text-primary hover:bg-primary/5 transition-all text-sm shadow-sm"
+                >
+                  {action.label}
                 </button>
               ))}
             </div>

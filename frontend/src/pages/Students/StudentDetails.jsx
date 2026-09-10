@@ -3,25 +3,37 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Mail, BookOpen, AlertCircle } from 'lucide-react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import ScoreCard from '../../components/students/ScoreCard';
-import { studentsData } from '../../data/students';
-import { submissionsData } from '../../data/submissions';
-import { assignmentsData } from '../../data/assignments';
+import { getStudentById } from '../../services/studentService';
+import { getSubmissions } from '../../services/submissionService';
 
 const StudentDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [student, setStudent] = useState(null);
+  const [studentSubmissions, setStudentSubmissions] = useState([]);
+  const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    const found = studentsData.find(s => s.id === parseInt(id));
-    if (found) setStudent(found);
-    else navigate('/students');
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [studentData, submissionsData] = await Promise.all([
+          getStudentById(id),
+          getSubmissions({ studentId: id })
+        ]);
+        setStudent(studentData);
+        setStudentSubmissions(submissionsData);
+      } catch (err) {
+        navigate('/students');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, [id, navigate]);
 
-  if (!student) return <div className="p-8 text-center">Loading...</div>;
-
-  // Filter submissions for this specific student
-  const studentSubmissions = submissionsData.filter(s => s.studentId === student.id);
+  if (loading) return <div className="p-8 text-center">Loading...</div>;
+  if (!student) return <div className="p-8 text-center text-red-500">Student not found</div>;
 
   const getInitials = (name) => name.split(' ').map(n => n[0]).join('').toUpperCase();
 
@@ -37,8 +49,12 @@ const StudentDetails = () => {
         </Link>
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
           <div className="flex items-center gap-5">
-            <div className="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center font-bold text-2xl shadow-sm">
-              {getInitials(student.name)}
+            <div className="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center font-bold text-2xl shadow-sm overflow-hidden">
+              {student.profileImage ? (
+                 <img src={student.profileImage} alt={student.name} className="w-full h-full object-cover" />
+              ) : (
+                 getInitials(student.name)
+              )}
             </div>
             <div>
               <div className="flex items-center gap-3 mb-1">
@@ -49,7 +65,7 @@ const StudentDetails = () => {
                   {student.status}
                 </span>
               </div>
-              <p className="text-gray-500 font-mono font-medium">{student.rollNo}</p>
+              <p className="text-gray-500 font-mono font-medium">{student.rollNumber}</p>
             </div>
           </div>
         </div>
@@ -64,13 +80,13 @@ const StudentDetails = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <ScoreCard 
               title="Average Score" 
-              score={student.averageScore} 
+              score={student.averageScore || 0} 
               subtitle="Class Rank: #3"
               colorClass="text-blue-600 bg-blue-100"
             />
             <ScoreCard 
               title="Problems Solved" 
-              score={student.problemsSolved} 
+              score={student.problemsSolved || 0} 
               maxScore={60} 
               colorClass="text-green-600 bg-green-100"
             />
@@ -93,11 +109,10 @@ const StudentDetails = () => {
                 </thead>
                 <tbody>
                   {studentSubmissions.map(sub => {
-                    const assignment = assignmentsData.find(a => a.id === sub.assignmentId);
                     return (
-                      <tr key={sub.id} className="border-b border-gray-50 hover:bg-gray-50/50">
-                        <td className="py-4 px-6 font-medium text-gray-900">{assignment?.title || 'Unknown Assignment'}</td>
-                        <td className="py-4 px-6 text-gray-500">{new Date(sub.submittedAt).toLocaleDateString()}</td>
+                      <tr key={sub._id} className="border-b border-gray-50 hover:bg-gray-50/50">
+                        <td className="py-4 px-6 font-medium text-gray-900">{sub.assignmentId?.title || 'Unknown Assignment'}</td>
+                        <td className="py-4 px-6 text-gray-500">{new Date(sub.submittedAt || sub.createdAt).toLocaleDateString()}</td>
                         <td className="py-4 px-6 font-semibold">{sub.score}</td>
                         <td className="py-4 px-6">
                           <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border ${
@@ -134,8 +149,10 @@ const StudentDetails = () => {
                 <p className="font-semibold text-gray-900">{student.email}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-500 flex items-center gap-2 mb-1"><BookOpen size={16} /> Enrolled Course</p>
-                <p className="font-semibold text-gray-900">{student.course}</p>
+                <p className="text-sm font-medium text-gray-500 flex items-center gap-2 mb-1"><BookOpen size={16} /> Enrolled Courses</p>
+                <p className="font-semibold text-gray-900">
+                  {student.enrolledCourses?.map(c => c.courseName).join(', ') || 'None'}
+                </p>
               </div>
             </div>
           </motion.div>

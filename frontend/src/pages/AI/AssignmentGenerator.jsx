@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import PromptPanel from '../../components/ai/PromptPanel';
 import AssignmentPreview from '../../components/ai/AssignmentPreview';
 import LoadingAnimation from '../../components/ai/LoadingAnimation';
@@ -8,6 +8,7 @@ import EmptyAIState from '../../components/ai/EmptyAIState';
 import { generateAssignment } from '../../services/aiService';
 
 const AssignmentGenerator = () => {
+  const location = useLocation();
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedAssignment, setGeneratedAssignment] = useState(null);
   const [loadingText, setLoadingText] = useState("Structuring assignment syllabus...");
@@ -60,6 +61,7 @@ const AssignmentGenerator = () => {
         description="Let AI assemble a balanced assignment structure based on your learning objectives and required difficulty."
         fields={fields}
         onGenerate={handleGenerate}
+        defaultValues={{ course: location.state?.defaultCourse || '' }}
       />
 
       <div className="mt-8">

@@ -27,7 +27,7 @@ const StudentCard = ({ student }) => {
               <h3 className="text-lg font-bold text-secondary leading-tight" title={student.name}>
                 {student.name}
               </h3>
-              <p className="text-sm text-gray-500 font-mono mt-0.5">{student.rollNo}</p>
+              <p className="text-sm text-gray-500 font-mono mt-0.5">{student.rollNumber}</p>
             </div>
           </div>
           <span className={`px-2.5 py-1 text-xs font-semibold rounded-md ${
@@ -60,7 +60,7 @@ const StudentCard = ({ student }) => {
       
       <div className="bg-gray-50/50 p-4 flex gap-2 border-t border-gray-100">
         <Link
-          to={`/students/${student.id}`}
+          to={`/students/${student._id}`}
           className="flex-1 text-center py-2 bg-white border border-gray-200 text-gray-700 hover:text-primary hover:border-primary/30 font-medium rounded-lg transition-colors flex items-center justify-center gap-2 text-sm"
         >
           <Eye size={16} /> Profile
