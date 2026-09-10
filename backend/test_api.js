@@ -25,7 +25,7 @@ async function runTests() {
   // 2. Student Login
   try {
     const res = await axios.post(`${API_URL}/auth/login`, {
-      email: 'ansh.goyal@chitkara.edu.in',
+      email: 'ansh.goyal@chitkarauniversity.edu.in',
       password: 'student123',
       role: 'student'
     });
@@ -40,7 +40,7 @@ async function runTests() {
   // 3. Faculty Login
   try {
     const res = await axios.post(`${API_URL}/auth/login`, {
-      email: 'prof.doe@chitkara.edu.in',
+      email: 'prof.doe@chitkarauniversity.edu.in',
       password: 'faculty123',
       role: 'faculty'
     });

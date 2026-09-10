@@ -179,7 +179,7 @@ export const submitAssignmentSolution = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { code, language } = req.body;
-    const userEmail = req.user?.email || 'ansh.goyal@chitkara.edu.in';
+    const userEmail = req.user?.email || 'ansh.goyal@chitkarauniversity.edu.in';
     const studentId = req.user?._id || req.user?.id || 'student-1';
 
     const judgeResult = await executeCodeService({

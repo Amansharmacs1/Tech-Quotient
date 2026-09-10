@@ -9,7 +9,7 @@ export default function Login() {
   const { login } = useAuth();
 
   const [activeRole, setActiveRole] = useState('student');
-  const [email, setEmail] = useState('ansh.goyal@chitkara.edu.in');
+  const [email, setEmail] = useState('ansh.goyal@chitkarauniversity.edu.in');
   const [password, setPassword] = useState('student123');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -17,10 +17,10 @@ export default function Login() {
   const fillDemo = (role) => {
     setActiveRole(role);
     if (role === 'student') {
-      setEmail('ansh.goyal@chitkara.edu.in');
+      setEmail('ansh.goyal@chitkarauniversity.edu.in');
       setPassword('student123');
     } else {
-      setEmail('prof.doe@chitkara.edu.in');
+      setEmail('prof.doe@chitkarauniversity.edu.in');
       setPassword('faculty123');
     }
     setErrorMessage('');

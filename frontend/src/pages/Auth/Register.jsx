@@ -145,7 +145,7 @@ export default function Register() {
             <input
               type="email"
               required
-              placeholder="name@chitkara.edu.in"
+              placeholder="name@chitkarauniversity.edu.in"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               style={{ width: '100%', boxSizing: 'border-box', padding: '0.75rem', borderRadius: '10px', border: '1px solid #cbd5e1', fontSize: '0.95rem' }}

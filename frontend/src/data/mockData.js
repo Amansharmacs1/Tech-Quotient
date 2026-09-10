@@ -276,7 +276,7 @@ export const studentProfile = {
   streakDays: studentInfo.streak,
   rank: studentInfo.globalRank,
   avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
-  email: "ansh.goyal@chitkara.edu.in",
+  email: "ansh.goyal@chitkarauniversity.edu.in",
   badges: [
     { title: "Array Master", icon: "🔥", desc: "Solved 40+ Array & Hashing Problems", date: "Jul 2026" },
     { title: "Streak Warrior", icon: "⚡", desc: "Maintained 14-Day Coding Streak", date: "Jul 2026" },

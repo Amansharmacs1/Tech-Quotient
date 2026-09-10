@@ -33,7 +33,7 @@ const seedData = async () => {
     // 1. Create Users (Student & Faculty)
     const studentUser = await User.create({
       name: 'Ansh Goyal',
-      email: 'ansh.goyal@chitkara.edu.in',
+      email: 'ansh.goyal@chitkarauniversity.edu.in',
       password: 'student123',
       role: 'student',
       rollNumber: '2411981092',
@@ -58,7 +58,7 @@ const seedData = async () => {
 
     const facultyUser = await User.create({
       name: 'Prof. Doe',
-      email: 'prof.doe@chitkara.edu.in',
+      email: 'prof.doe@chitkarauniversity.edu.in',
       password: 'faculty123',
       role: 'faculty',
       title: 'Professor & Head of CSE Dept',
@@ -162,7 +162,7 @@ const seedData = async () => {
     await Student.create({
       studentId: 'STU001',
       name: 'Ansh Goyal',
-      email: 'ansh.goyal@chitkara.edu.in',
+      email: 'ansh.goyal@chitkarauniversity.edu.in',
       rollNumber: '2411981092',
       department: 'Computer Science',
       semester: 'Fall 2026',

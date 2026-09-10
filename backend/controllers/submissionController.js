@@ -26,7 +26,7 @@ export const runCode = async (req, res, next) => {
 export const submitCode = async (req, res, next) => {
   try {
     const { code, language, problemId, assignmentId } = req.body;
-    const userEmail = req.user?.email || 'ansh.goyal@chitkara.edu.in';
+    const userEmail = req.user?.email || 'ansh.goyal@chitkarauniversity.edu.in';
     const studentId = req.user?._id || req.user?.id || 'student-1';
 
     const result = await executeCodeService({ code, language, problemId, assignmentId, isSubmit: true });
@@ -71,7 +71,7 @@ export const submitCode = async (req, res, next) => {
 // @route   GET /api/submissions/history
 export const getSubmissionHistory = async (req, res, next) => {
   try {
-    const userEmail = req.user?.email || 'ansh.goyal@chitkara.edu.in';
+    const userEmail = req.user?.email || 'ansh.goyal@chitkarauniversity.edu.in';
 
     try {
       const history = await Submission.find({ userEmail })

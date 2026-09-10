@@ -4,6 +4,31 @@
 
 ---
 
+## 🌿 Git Branches & Repository Architecture
+
+This repository contains the complete unified codebase on the **`main`** branch, combining the three dedicated development sub-branches into one functional full-stack application:
+
+| Branch Name | Section & Contents | Status |
+|---|---|---|
+| 🌟 **`main`** / **`Main`** | **Complete Unified TechQuotient Project**: Contains the entire integrated platform (Landing Page + Student Portal + Faculty Portal + Shared Auth + Unified Backend + Judge0 Engine + Gemini AI). | 🚀 **Active Production Target** |
+| 🌐 **`front_page`** | **Landing Page & Public Portal**: High-converting landing page, platform metrics, university branding, and 20+ corporate partner company showcase. | ✅ **Merged into `main`** (React component at `frontend/src/pages/LandingPage.jsx`) |
+| 🎓 **`student-Portal`** | **Student Coding & Learning Suite**: Monaco code editor, multi-language compiler (Judge0), TechBot AI Mentor, enrolled courses, coursework submissions, contests, and personal analytics. | ✅ **Merged into `main`** (Accessible at `/student/*`) |
+| 👨‍🏫 **`faculty-Portal`** | **Faculty Administration & Assessment**: Course and curriculum management, coding problem authoring, assignment publishing, student roster, code submission grading, and Recharts analytics. | ✅ **Merged into `main`** (Accessible at `/faculty/*`) |
+
+### Merged Branch Diagram
+```text
+           [ front_page ] ──────────┐
+        (Landing & Showcase)        │
+                                    ├──► [ main / Main ]
+         [ student-Portal ] ────────┤    (Complete Unified Platform)
+      (Monaco IDE, Judge0, AI)      │
+                                    │
+         [ faculty-Portal ] ────────┘
+       (Grading, Courses, Stats)
+```
+
+---
+
 ## 🏛️ Application Architecture & Unified Flow
 
 ```
@@ -134,8 +159,8 @@ The login screen (`/login`) includes quick-fill buttons for instant testing:
 
 | Role | Email | Password | Primary Portal |
 |---|---|---|---|
-| **Student** | `ansh.goyal@chitkara.edu.in` | `student123` | Student Portal (`/student/dashboard`) |
-| **Faculty** | `prof.doe@chitkara.edu.in` | `faculty123` | Faculty Portal (`/faculty/dashboard`) |
+| **Student** | `ansh.goyal@chitkarauniversity.edu.in` | `student123` | Student Portal (`/student/dashboard`) |
+| **Faculty** | `prof.doe@chitkarauniversity.edu.in` | `faculty123` | Faculty Portal (`/faculty/dashboard`) |
 
 ---
 

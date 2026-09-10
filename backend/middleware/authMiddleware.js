@@ -15,7 +15,7 @@ export const protect = async (req, res, next) => {
       _id: 'user-student-1',
       id: 'user-student-1',
       name: 'Ansh Goyal',
-      email: 'ansh.goyal@chitkara.edu.in',
+      email: 'ansh.goyal@chitkarauniversity.edu.in',
       role: 'student'
     };
     return next();
@@ -26,7 +26,7 @@ export const protect = async (req, res, next) => {
       _id: 'user-faculty-1',
       id: 'user-faculty-1',
       name: 'Prof. Doe',
-      email: 'prof.doe@chitkara.edu.in',
+      email: 'prof.doe@chitkarauniversity.edu.in',
       role: 'faculty'
     };
     return next();
