@@ -1,3 +1,4 @@
+import { useAuth } from '../contexts/AuthContext';
 import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -8,6 +9,7 @@ import AIInsightCard from '../components/AIInsightCard';
 import { getDashboardAnalytics } from '../services/analyticsService';
 
 export default function Dashboard() {
+  const { user } = useAuth();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -30,7 +32,7 @@ export default function Dashboard() {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-secondary">Welcome back, Professor 👋</h1>
+          <h1 className="text-3xl font-bold text-secondary">Welcome back, {user?.name ? user.name.split(' ')[0] : 'Professor'} 👋</h1>
           <p className="text-gray-500 mt-2 text-sm font-medium">
             Manage your courses, coding problems and student performance.
           </p>

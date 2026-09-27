@@ -1,4 +1,5 @@
 import React from 'react';
+import { useAuth } from '../../contexts/AuthContext';
 import { 
   Users, 
   ClipboardList, 
@@ -46,7 +47,7 @@ export default function Dashboard({ role = 'student', setActiveTab, onSelectCour
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-dark)' }}>
-            Welcome back, {isFaculty ? 'Professor' : studentInfo.name.split(' ')[0]} 👋
+            Welcome back, {user?.name ? user.name.split(' ')[0] : 'Student'} 👋
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '0.2rem' }}>
             {isFaculty 

@@ -5,26 +5,16 @@ import { useAuth } from '../contexts/AuthContext';
 
 export default function Navbar({ portalType = 'faculty' }) {
   const navigate = useNavigate();
-  const { user, role, switchRole, logout } = useAuth();
+  const { user, role, logout } = useAuth();
   const isFaculty = portalType === 'faculty' || role === 'faculty';
-
-  const handleRoleToggle = () => {
-    const target = isFaculty ? 'student' : 'faculty';
-    switchRole(target);
-    navigate(target === 'faculty' ? '/faculty/dashboard' : '/student/dashboard');
-  };
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
 
-  const avatarUrl = user?.avatar || (isFaculty
-    ? 'https://ui-avatars.com/api/?name=Professor+Doe&background=FFF1E8&color=F26422'
-    : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
-  );
-
-  const displayName = user?.name || (isFaculty ? 'Prof. Doe' : 'Ansh Goyal');
+  const displayName = user?.name || 'User';
+  const avatarUrl = user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=FFF1E8&color=F26422`;
 
   return (
     <header className="h-[70px] bg-white border-b border-gray-100 flex items-center justify-between px-8 sticky top-0 z-10">
@@ -57,16 +47,6 @@ export default function Navbar({ portalType = 'faculty' }) {
 
       {/* Right Controls & User Menu */}
       <div className="flex-1 flex items-center justify-end space-x-4">
-        
-        {/* Instant Role Switcher Button for Evaluation */}
-        <button
-          onClick={handleRoleToggle}
-          title={`Click to switch to ${isFaculty ? 'Student' : 'Faculty'} view`}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 hover:bg-orange-100 text-primary border border-orange-200 rounded-lg text-xs font-bold transition-all shadow-sm"
-        >
-          <RefreshCw size={13} />
-          <span>Switch to {isFaculty ? 'Student' : 'Faculty'}</span>
-        </button>
 
         {/* Notifications Icon */}
         <button 
@@ -85,12 +65,11 @@ export default function Navbar({ portalType = 'faculty' }) {
             src={avatarUrl}
             alt="Profile"
             onError={(e) => {
-              e.target.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(displayName) + '&background=FFF1E8&color=F26422';
+              e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=FFF1E8&color=F26422`;
             }}
           />
           <div className="hidden md:block text-left">
             <p className="text-sm font-semibold text-secondary leading-tight">{displayName}</p>
-            <p className="text-xs text-gray-400">{isFaculty ? 'CSE Faculty' : 'Roll: 2411981092'}</p>
           </div>
 
           {/* Logout Button */}

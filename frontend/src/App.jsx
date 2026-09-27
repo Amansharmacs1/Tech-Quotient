@@ -10,7 +10,11 @@ import StudentLayout from './layout/StudentLayout';
 // Public Pages
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Auth/Login';
-import Register from './pages/Auth/Register';
+import Signup from './pages/Auth/Signup';
+import VerifyOTP from './pages/Auth/VerifyOTP';
+import ForgotPassword from './pages/Auth/ForgotPassword';
+import VerifyResetOTP from './pages/Auth/VerifyResetOTP';
+import ResetPassword from './pages/Auth/ResetPassword';
 
 // Student Pages
 import StudentDashboard from './pages/Student/Dashboard';
@@ -76,7 +80,11 @@ export default function App() {
       {/* 1. Public Entry Routes */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/verify-otp" element={<VerifyOTP />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/verify-reset-otp" element={<VerifyResetOTP />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
 
       {/* 2. Student Portal Routes */}
       <Route path="/student" element={

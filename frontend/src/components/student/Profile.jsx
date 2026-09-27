@@ -14,12 +14,14 @@ import {
   X
 } from 'lucide-react';
 import { studentProfile as initialProfile } from '../../data/mockData';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function Profile({ role = 'student', onUpdateProfile }) {
+  const { user } = useAuth();
   const [profile, setProfile] = useState(initialProfile);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editForm, setEditForm] = useState({
-    name: profile.name,
+    name: user?.name || profile.name,
     email: profile.email,
     department: profile.department,
     institution: profile.institution,
@@ -57,14 +59,14 @@ export default function Profile({ role = 'student', onUpdateProfile }) {
 
         <div style={{ flex: 1 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.4rem' }}>
-            <h1 style={{ color: 'white', fontSize: '1.8rem', fontWeight: 800 }}>{profile.name}</h1>
+            <h1 style={{ color: 'white', fontSize: '1.8rem', fontWeight: 800 }}>{user?.name || profile.name}</h1>
             <span className="badge badge-orange">Batch {profile.batch}</span>
           </div>
 
           <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', fontSize: '0.875rem', color: '#cbd5e1' }}>
-            <span><GraduationCap size={16} style={{ display: 'inline', marginRight: '4px' }} /> Roll No: {profile.rollNo}</span>
+            
             <span><Building2 size={16} style={{ display: 'inline', marginRight: '4px' }} /> {profile.department}</span>
-            <span><Mail size={16} style={{ display: 'inline', marginRight: '4px' }} /> {profile.email}</span>
+            <span><Mail size={16} style={{ display: 'inline', marginRight: '4px' }} /> {user?.email || profile.email}</span>
           </div>
         </div>
 

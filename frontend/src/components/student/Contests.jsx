@@ -26,7 +26,7 @@ export default function Contests({ setActiveTab, onSelectProblem }) {
     leaderboard: [
       { rank: 1, name: "Aarav Sharma", score: 400, solved: 4, penalty: "42m" },
       { rank: 2, name: "Ishita Verma", score: 380, solved: 4, penalty: "45m" },
-      { rank: 12, name: "Ansh Goyal (You)", score: 350, solved: 3, penalty: "48m" }
+      { rank: 12, name: `${myName} (You)`, score: 350, solved: 3, penalty: '48m' }
     ]
   };
 
@@ -155,8 +155,8 @@ export default function Contests({ setActiveTab, onSelectProblem }) {
                   key={row.rank} 
                   style={{ 
                     borderBottom: '1px solid var(--card-border)',
-                    backgroundColor: row.name.includes('Ansh Goyal') ? 'var(--lighter-orange)' : 'transparent',
-                    fontWeight: row.name.includes('Ansh Goyal') ? 700 : 400
+                    backgroundColor: row.name.includes(myName) ? 'var(--lighter-orange)' : 'transparent',
+                    fontWeight: row.name.includes(myName) ? 700 : 400
                   }}
                 >
                   <td style={{ padding: '0.85rem 1rem' }}>
@@ -174,7 +174,7 @@ export default function Contests({ setActiveTab, onSelectProblem }) {
                       {row.rank}
                     </span>
                   </td>
-                  <td style={{ padding: '0.85rem 1rem', color: row.name.includes('Ansh Goyal') ? 'var(--primary-orange)' : 'var(--dark-heading)' }}>
+                  <td style={{ padding: '0.85rem 1rem', color: row.name.includes(myName) ? 'var(--primary-orange)' : 'var(--dark-heading)' }}>
                     {row.name}
                   </td>
                   <td style={{ padding: '0.85rem 1rem', fontWeight: 700 }}>{row.score} pts</td>

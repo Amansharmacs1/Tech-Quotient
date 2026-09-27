@@ -1,35 +1,11 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
-import { getStoreData } from '../services/store.js';
 
 export const protect = async (req, res, next) => {
   let token;
 
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     token = req.headers.authorization.split(' ')[1];
-  }
-
-  // Support demo token for fast evaluator workflow
-  if (token === 'mock-jwt-token-student') {
-    req.user = {
-      _id: 'user-student-1',
-      id: 'user-student-1',
-      name: 'Ansh Goyal',
-      email: 'ansh.goyal@chitkarauniversity.edu.in',
-      role: 'student'
-    };
-    return next();
-  }
-
-  if (token === 'mock-jwt-token-faculty') {
-    req.user = {
-      _id: 'user-faculty-1',
-      id: 'user-faculty-1',
-      name: 'Prof. Doe',
-      email: 'prof.doe@chitkarauniversity.edu.in',
-      role: 'faculty'
-    };
-    return next();
   }
 
   if (!token) {
