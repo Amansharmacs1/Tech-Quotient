@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+const fs = require('fs');
+const path = 'frontend/src/components/student/Profile.jsx';
+const content = `import React, { useState } from 'react';
 import { User, Mail, Building2, BookOpen, Code2, Flame, GraduationCap, Edit3, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { updateProfileApi } from '../../services/authService';
@@ -6,7 +8,7 @@ import { updateProfileApi } from '../../services/authService';
 export default function Profile({ role = 'student', onUpdateProfile }) {
   const { user } = useAuth();
   
-  const displayName = (user?.email ? user.email.split('@')[0].replace(/[0-9]/g, '') : user?.name) || 'Student';
+  const displayName = (user?.email ? user.email.split('@')[0] : user?.name) || 'Student';
   const initial = displayName.charAt(0).toUpperCase();
 
   const profile = {
@@ -225,3 +227,5 @@ export default function Profile({ role = 'student', onUpdateProfile }) {
     </div>
   );
 }
+`;
+fs.writeFileSync(path, content);
