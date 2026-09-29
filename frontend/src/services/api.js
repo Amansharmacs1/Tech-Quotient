@@ -198,3 +198,44 @@ export const sendAiQueryApi = async (query, code) => {
 };
 
 export default api;
+
+export const fetchAnnouncementsApi = async () => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/announcements`, { headers: getHeaders() });
+    if (res.ok) {
+      const data = await res.json();
+      return data.data;
+    }
+  } catch (err) {
+    console.error('Error fetching announcements API:', err);
+  }
+  return [];
+};
+
+export const createAnnouncementApi = async (announcementData) => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/announcements`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(announcementData)
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data.data;
+    }
+  } catch (err) {
+    console.error('Error creating announcement API:', err);
+  }
+  return null;
+};
+
+export const deleteAnnouncementApi = async (id) => {
+  try {
+    await fetch(`${API_BASE_URL}/announcements/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders()
+    });
+  } catch (err) {
+    console.error('Error deleting announcement API:', err);
+  }
+};

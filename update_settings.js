@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
-import { User, Mail, Lock, Bell, Shield, Save, Eye, EyeOff } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
-import { changePasswordApi } from '../../services/authService';
+const fs = require('fs');
 
-export default function Settings() {
-  
-  const { user } = useAuth();
+const path = 'frontend/src/pages/Settings/Settings.jsx';
+let content = fs.readFileSync(path, 'utf8');
+
+// Add imports
+if (!content.includes('Eye')) {
+    content = content.replace("import { User, Mail, Lock, Bell, Shield, Save } from 'lucide-react';", "import { User, Mail, Lock, Bell, Shield, Save, Eye, EyeOff } from 'lucide-react';\nimport { changePasswordApi } from '../../services/authService';");
+}
+
+// Add state
+const stateReplacement = `
   const [activeTab, setActiveTab] = useState('profile');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -36,80 +40,14 @@ export default function Settings() {
     }
     setLoading(false);
   };
+`;
+content = content.replace("const [activeTab, setActiveTab] = useState('profile');", stateReplacement);
 
-  
-  return (
-    <div className="max-w-7xl mx-auto pb-12 animate-fade-in">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-secondary mb-2">Settings</h1>
-        <p className="text-gray-500">Manage your profile, preferences, and account security.</p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-        {/* Sidebar Nav */}
-        <div className="col-span-1 space-y-2">
-          <button 
-            onClick={() => setActiveTab('profile')}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${activeTab === 'profile' ? 'bg-primary text-white shadow-md' : 'text-gray-600 hover:bg-gray-50'}`}
-          >
-            <User size={18} /> Profile Information
-          </button>
-          <button 
-            onClick={() => setActiveTab('security')}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${activeTab === 'security' ? 'bg-primary text-white shadow-md' : 'text-gray-600 hover:bg-gray-50'}`}
-          >
-            <Shield size={18} /> Security
-          </button>
-          
-        </div>
-
-        {/* Content Area */}
-        <div className="col-span-1 md:col-span-3">
-          {activeTab === 'profile' && (
-            <div className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
-              <h2 className="text-xl font-bold text-gray-800 mb-6 border-b border-gray-100 pb-4">Profile Information</h2>
-              
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <User size={16} className="text-gray-400" />
-                    </div>
-                    <input type="text" value={user?.name || ""} disabled readOnly className="pl-10 w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Mail size={16} className="text-gray-400" />
-                    </div>
-                    <input type="email" value={user?.email || ""} disabled readOnly className="pl-10 w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
-                  <input type="text" value={user?.department || "Computer Science"} disabled readOnly className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                  <input type="text" value={user?.title || "Faculty Member"} disabled readOnly className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" />
-                </div>
-              </div>
-
-
-            </div>
-          )}
-
-          {activeTab === 'security' && (
-            <div className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
-              <h2 className="text-xl font-bold text-gray-800 mb-6 border-b border-gray-100 pb-4">Security Settings</h2>
-              
-              <form onSubmit={handleChangePassword} className="space-y-6 max-w-lg">
+// Update Security Tab UI
+const securityTabSearch = `<div className="space-y-6 max-w-lg">`;
+const securityTabReplace = `<form onSubmit={handleChangePassword} className="space-y-6 max-w-lg">
                 {message.text && (
-                  <div className={`p-3 rounded-lg text-sm ${message.type === 'error' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`}>
+                  <div className={\`p-3 rounded-lg text-sm \${message.type === 'error' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}\`}>
                     {message.text}
                   </div>
                 )}
@@ -175,13 +113,8 @@ export default function Settings() {
                     <Save size={18} /> {loading ? 'Saving...' : 'Update Password'}
                   </button>
                 </div>
-              </form>
-            </div>
-          )}
+              </form>`;
 
-          
-        </div>
-      </div>
-    </div>
-  );
-}
+content = content.replace(/<div className="space-y-6 max-w-lg">[\s\S]*?<\/div>\s*<\/div>\s*\)}/m, securityTabReplace + '\n            </div>\n          )}');
+
+fs.writeFileSync(path, content);

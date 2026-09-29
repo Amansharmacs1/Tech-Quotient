@@ -50,7 +50,7 @@ const AssignmentGenerator = () => {
   return (
     <div className="max-w-5xl mx-auto pb-12">
       <div className="mb-6">
-        <Link to="/ai" className="inline-flex items-center gap-2 text-gray-500 hover:text-primary transition-colors font-medium mb-4">
+        <Link to="/faculty/ai" className="inline-flex items-center gap-2 text-gray-500 hover:text-primary transition-colors font-medium mb-4">
           <ArrowLeft size={18} /> Back to AI Hub
         </Link>
         <h1 className="text-3xl font-bold text-secondary">AI Assignment Generator</h1>

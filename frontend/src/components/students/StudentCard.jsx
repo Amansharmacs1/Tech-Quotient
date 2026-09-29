@@ -60,13 +60,13 @@ const StudentCard = ({ student }) => {
       
       <div className="bg-gray-50/50 p-4 flex gap-2 border-t border-gray-100">
         <Link
-          to={`/students/${student._id}`}
+          to={`/faculty/students/${student._id}`}
           className="flex-1 text-center py-2 bg-white border border-gray-200 text-gray-700 hover:text-primary hover:border-primary/30 font-medium rounded-lg transition-colors flex items-center justify-center gap-2 text-sm"
         >
           <Eye size={16} /> Profile
         </Link>
         <Link
-          to={`/performance`}
+          to={`/faculty/students/${student._id}/performance`}
           className="flex-1 text-center py-2 bg-white border border-gray-200 text-gray-700 hover:text-primary hover:border-primary/30 font-medium rounded-lg transition-colors flex items-center justify-center gap-2 text-sm"
         >
           <Activity size={16} /> Analytics

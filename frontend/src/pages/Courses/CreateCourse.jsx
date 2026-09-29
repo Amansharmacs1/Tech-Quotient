@@ -10,7 +10,7 @@ const CreateCourse = () => {
   const handleCreate = async (formData) => {
     try {
       await createCourse(formData);
-      navigate('/courses');
+      navigate('/faculty/courses');
     } catch (error) {
       alert('Failed to create course. Please check required fields.');
     }
@@ -19,7 +19,7 @@ const CreateCourse = () => {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-6">
-        <Link to="/courses" className="inline-flex items-center gap-2 text-gray-500 hover:text-primary transition-colors mb-4">
+        <Link to="/faculty/courses" className="inline-flex items-center gap-2 text-gray-500 hover:text-primary transition-colors mb-4">
           <ArrowLeft size={16} />
           Back to Courses
         </Link>

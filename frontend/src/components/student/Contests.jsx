@@ -14,8 +14,11 @@ import {
 } from 'lucide-react';
 import { contestsData, studentProfile } from '../../data/mockData';
 import { registerContestApi } from '../../services/api';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function Contests({ setActiveTab, onSelectProblem }) {
+  const { user } = useAuth();
+  const myName = user?.name || 'Student';
   const liveContest = contestsData[0] || {
     id: "c-1",
     title: "TechQuotient Algo Clash #14",

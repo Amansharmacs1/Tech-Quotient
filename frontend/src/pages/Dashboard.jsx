@@ -37,7 +37,7 @@ export default function Dashboard() {
             Manage your courses, coding problems and student performance.
           </p>
         </div>
-        <Link to="/assignments/create" className="bg-gradient-primary hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 text-white px-6 py-3 rounded-full font-semibold flex items-center justify-center gap-2">
+        <Link to="/faculty/assignments/create" className="bg-gradient-primary hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 text-white px-6 py-3 rounded-full font-semibold flex items-center justify-center gap-2">
           <Plus className="w-5 h-5" />
           Create Assignment
         </Link>

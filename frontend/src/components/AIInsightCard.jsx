@@ -27,7 +27,7 @@ export default function AIInsightCard() {
         <p className="text-secondary text-sm font-medium">Create more DP practice problems.</p>
       </div>
       
-      <Link to="/ai" className="mt-4 flex items-center gap-2 text-primary font-semibold text-sm hover:text-primary-light transition-colors">
+      <Link to="/faculty/ai" className="mt-4 flex items-center gap-2 text-primary font-semibold text-sm hover:text-primary-light transition-colors">
         Take Action <ArrowRight className="w-4 h-4" />
       </Link>
     </div>

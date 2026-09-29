@@ -112,7 +112,7 @@ const Problems = () => {
             </button>
           </div>
           <Link
-            to="/problems/create"
+            to="/faculty/problems/create"
             className="px-6 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-opacity-90 transition-all flex items-center gap-2 shadow-sm shadow-primary/30 hover:-translate-y-0.5"
           >
             <Plus size={20} />

@@ -24,38 +24,38 @@ const AIHome = () => {
       title: 'AI Problem Generator',
       description: 'Generate structured programming problems based on topic and difficulty.',
       icon: Code2,
-      path: '/ai/problem-generator',
+      path: '/faculty/ai/problem-generator',
       colorClass: 'bg-blue-100 text-blue-600'
     },
     {
       title: 'AI Assignment Generator',
       description: 'Create complete, balanced assignments mapped to your course learning objectives.',
       icon: FileText,
-      path: '/ai/assignment-generator',
+      path: '/faculty/ai/assignment-generator',
       colorClass: 'bg-purple-100 text-purple-600'
     },
     {
       title: 'Student Insights',
       description: 'Get AI-driven analysis on class performance, weak topics, and actionable teaching recommendations.',
       icon: LineChart,
-      path: '/ai/student-insights',
+      path: '/faculty/ai/student-insights',
       colorClass: 'bg-green-100 text-green-600'
     },
     {
       title: 'AI Teaching Assistant',
       description: 'Conversational assistant to help you brainstorm ideas, draft emails, or analyze data.',
       icon: MessageSquare,
-      path: '/ai/assistant',
+      path: '/faculty/ai/chat',
       colorClass: 'bg-orange-100 text-orange-600'
     }
   ];
 
   const quickActions = [
-    { label: "Generate Array Problem", path: "/ai/problem-generator", state: { defaultTopic: "Arrays" } },
-    { label: "Analyze Class Performance", path: "/ai/student-insights", state: {} },
-    { label: "Create DSA Assignment", path: "/ai/assignment-generator", state: { defaultCourse: "Data Structures" } },
-    { label: "Find Weak Topics", path: "/ai/assistant", state: { defaultMessage: "What are the weakest topics for my students based on recent performance?" } },
-    { label: "Suggest Practice Problems", path: "/ai/assistant", state: { defaultMessage: "Suggest some good practice problems for Graph traversals." } }
+    { label: "Generate Array Problem", path: "/faculty/ai/problem-generator", state: { defaultTopic: "Arrays" } },
+    { label: "Analyze Class Performance", path: "/faculty/ai/student-insights", state: {} },
+    { label: "Create DSA Assignment", path: "/faculty/ai/assignment-generator", state: { defaultCourse: "Data Structures" } },
+    { label: "Find Weak Topics", path: "/faculty/ai/chat", state: { defaultMessage: "What are the weakest topics for my students based on recent performance?" } },
+    { label: "Suggest Practice Problems", path: "/faculty/ai/chat", state: { defaultMessage: "Suggest some good practice problems for Graph traversals." } }
   ];
 
   const recentActivity = [
@@ -154,7 +154,7 @@ const AIHome = () => {
               <h3 className="font-bold text-gray-900 flex items-center gap-2">
                 <Clock size={18} className="text-purple-500" /> Recent AI Activity
               </h3>
-              <Link to="/ai/history" className="text-xs font-bold text-primary hover:underline">View All</Link>
+              <Link to="/faculty/ai/history" className="text-xs font-bold text-primary hover:underline">View All</Link>
             </div>
             
             <div className="space-y-5">

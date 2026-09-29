@@ -10,7 +10,7 @@ export const getStudents = async (req, res, next) => {
     const { courseId, search } = req.query;
 
     try {
-      const query = {};
+      const query = { role: 'student' };
       if (courseId) query.enrolledCourses = courseId;
       if (search) {
         query.$or = [
@@ -20,11 +20,11 @@ export const getStudents = async (req, res, next) => {
         ];
       }
 
-      const students = await Student.find(query)
+      const students = await User.find(query).select('-password')
         .populate('enrolledCourses', 'courseName courseCode')
         .sort({ createdAt: -1 });
 
-      if (students && students.length > 0) {
+      if (students) {
         return res.json({
           success: true,
           data: students,

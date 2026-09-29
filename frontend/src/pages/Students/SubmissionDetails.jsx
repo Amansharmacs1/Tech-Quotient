@@ -20,7 +20,7 @@ const SubmissionDetails = () => {
   useEffect(() => {
     const found = submissionsData.find(s => s.id === parseInt(id));
     if (found) setSubmission(found);
-    else navigate('/submissions');
+    else navigate('/faculty/submissions');
   }, [id, navigate]);
 
   if (!submission) return <div className="p-8 text-center">Loading...</div>;

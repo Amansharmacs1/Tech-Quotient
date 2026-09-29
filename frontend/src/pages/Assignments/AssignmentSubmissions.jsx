@@ -33,7 +33,7 @@ const AssignmentSubmissions = () => {
         setAssignment(assignmentData);
         setSubmissions(submissionsData);
       } catch (err) {
-        navigate('/assignments');
+        navigate('/faculty/assignments');
       } finally {
         setLoading(false);
       }

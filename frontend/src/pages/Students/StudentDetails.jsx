@@ -24,7 +24,7 @@ const StudentDetails = () => {
         setStudent(studentData);
         setStudentSubmissions(submissionsData);
       } catch (err) {
-        navigate('/students');
+        navigate('/faculty/students');
       } finally {
         setLoading(false);
       }

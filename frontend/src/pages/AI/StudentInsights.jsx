@@ -24,7 +24,7 @@ const StudentInsights = () => {
     <div className="max-w-7xl mx-auto pb-12">
       <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <Link to="/ai" className="inline-flex items-center gap-2 text-gray-500 hover:text-primary transition-colors font-medium mb-4">
+          <Link to="/faculty/ai" className="inline-flex items-center gap-2 text-gray-500 hover:text-primary transition-colors font-medium mb-4">
             <ArrowLeft size={18} /> Back to AI Hub
           </Link>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
@@ -125,7 +125,7 @@ const StudentInsights = () => {
                       <td className="p-4 font-bold text-gray-900">{student.score}</td>
                       <td className="p-4 text-sm text-gray-600">{student.recommendation}</td>
                       <td className="p-4 text-right">
-                        <Link to="/students" className="text-sm font-bold text-primary hover:underline">View Student</Link>
+                        <Link to="/faculty/students" className="text-sm font-bold text-primary hover:underline">View Student</Link>
                       </td>
                     </tr>
                   ))}

@@ -15,17 +15,17 @@ import {
 } from 'lucide-react';
 
 const navItems = [
-  { name: 'Dashboard', path: '/dashboard', icon: Home },
-  { name: 'Courses', path: '/courses', icon: BookOpen },
-  { name: 'Coding Problems', path: '/problems', icon: Code2 },
-  { name: 'Assignments', path: '/assignments', icon: FileText },
-  { name: 'Students', path: '/students', icon: Users },
-  { name: 'Submissions', path: '/submissions', icon: Inbox },
-  { name: 'Analytics', path: '/analytics', icon: LineChart },
-  { name: 'Reports', path: '/reports', icon: FileBarChart },
-  { name: 'AI Assistant', path: '/ai', icon: Sparkles },
-  { name: 'Announcements', path: '/announcements', icon: Bell },
-  { name: 'Settings', path: '/settings', icon: Settings },
+  { name: 'Dashboard', path: '/faculty/dashboard', icon: Home },
+  { name: 'Courses', path: '/faculty/courses', icon: BookOpen },
+  { name: 'Coding Problems', path: '/faculty/problems', icon: Code2 },
+  { name: 'Assignments', path: '/faculty/assignments', icon: FileText },
+  { name: 'Students', path: '/faculty/students', icon: Users },
+  { name: 'Submissions', path: '/faculty/submissions', icon: Inbox },
+  { name: 'Analytics', path: '/faculty/analytics', icon: LineChart },
+  { name: 'Reports', path: '/faculty/reports', icon: FileBarChart },
+  { name: 'AI Assistant', path: '/faculty/ai', icon: Sparkles },
+  { name: 'Announcements', path: '/faculty/announcements', icon: Bell },
+  { name: 'Settings', path: '/faculty/settings', icon: Settings },
 ];
 
 export default function Sidebar() {

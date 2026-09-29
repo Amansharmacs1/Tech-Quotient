@@ -2,6 +2,7 @@ import Course from '../models/Course.js';
 import Problem from '../models/Problem.js';
 import Assignment from '../models/Assignment.js';
 import Student from '../models/Student.js';
+import User from '../models/User.js';
 import Submission from '../models/Submission.js';
 import { getStoreData } from '../services/store.js';
 import { sendSuccess, sendError } from '../utils/apiResponse.js';
@@ -20,7 +21,7 @@ export const getDashboardAnalytics = async (req, res, next) => {
       coursesCount = await Course.countDocuments();
       problemsCount = await Problem.countDocuments();
       assignmentsCount = await Assignment.countDocuments();
-      studentsCount = await Student.countDocuments();
+      studentsCount = await User.countDocuments({ role: 'student' });
 
       recentSubmissions = await Submission.find({})
         .populate('studentId', 'name email')

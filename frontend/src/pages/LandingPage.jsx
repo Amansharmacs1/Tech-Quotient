@@ -92,7 +92,7 @@ export default function LandingPage() {
                   Sign In
                 </Link>
                 <Link
-                  to="/register"
+                  to="/signup"
                   style={{
                     textDecoration: 'none',
                     backgroundColor: '#f26422',

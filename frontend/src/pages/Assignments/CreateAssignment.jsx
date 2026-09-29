@@ -11,7 +11,7 @@ const CreateAssignment = () => {
   const handleCreate = async (newAssignmentData) => {
     try {
       await createAssignment(newAssignmentData);
-      navigate('/assignments');
+      navigate('/faculty/assignments');
     } catch (err) {
       alert('Failed to create assignment');
     }
@@ -21,7 +21,7 @@ const CreateAssignment = () => {
     <div className="max-w-4xl mx-auto pb-12">
       <div className="mb-6">
         <Link 
-          to="/assignments" 
+          to="/faculty/assignments" 
           className="inline-flex items-center gap-2 text-gray-500 hover:text-primary transition-colors font-medium mb-4"
         >
           <ArrowLeft size={18} />

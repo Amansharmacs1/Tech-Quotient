@@ -18,7 +18,7 @@ const AssignmentDetails = () => {
         const data = await getAssignmentById(id);
         setAssignment(data);
       } catch (err) {
-        navigate('/assignments');
+        navigate('/faculty/assignments');
       } finally {
         setLoading(false);
       }
@@ -49,7 +49,7 @@ const AssignmentDetails = () => {
       {/* Header */}
       <div className="mb-6">
         <Link 
-          to="/assignments" 
+          to="/faculty/assignments" 
           className="inline-flex items-center gap-2 text-gray-500 hover:text-primary transition-colors font-medium mb-4"
         >
           <ArrowLeft size={18} />

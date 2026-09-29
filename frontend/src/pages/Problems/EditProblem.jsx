@@ -16,7 +16,7 @@ const EditProblem = () => {
         const data = await getProblemById(id);
         setProblemData(data);
       } catch (err) {
-        navigate('/problems');
+        navigate('/faculty/problems');
       }
     };
     fetchProblem();
@@ -25,7 +25,7 @@ const EditProblem = () => {
   const handleUpdate = async (updatedData) => {
     try {
       await updateProblem(id, updatedData);
-      navigate('/problems');
+      navigate('/faculty/problems');
     } catch (err) {
       alert('Failed to update problem.');
     }
@@ -37,7 +37,7 @@ const EditProblem = () => {
     <div className="max-w-4xl mx-auto">
       <div className="mb-6">
         <Link 
-          to="/problems" 
+          to="/faculty/problems" 
           className="inline-flex items-center gap-2 text-gray-500 hover:text-primary transition-colors font-medium mb-4"
         >
           <ArrowLeft size={18} />

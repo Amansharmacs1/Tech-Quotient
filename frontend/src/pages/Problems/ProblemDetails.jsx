@@ -28,7 +28,7 @@ const ProblemDetails = () => {
         const data = await getProblemById(id);
         setProblem(data);
       } catch (error) {
-        navigate('/problems');
+        navigate('/faculty/problems');
       } finally {
         setLoading(false);
       }
@@ -39,7 +39,7 @@ const ProblemDetails = () => {
   const handleDelete = async () => {
     try {
       await deleteProblem(id);
-      navigate('/problems');
+      navigate('/faculty/problems');
     } catch (error) {
       console.error("Failed to delete problem:", error);
     }
@@ -55,7 +55,7 @@ const ProblemDetails = () => {
       {/* Header */}
       <div className="mb-6">
         <Link 
-          to="/problems" 
+          to="/faculty/problems" 
           className="inline-flex items-center gap-2 text-gray-500 hover:text-primary transition-colors font-medium mb-4"
         >
           <ArrowLeft size={18} />

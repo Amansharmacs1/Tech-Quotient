@@ -11,7 +11,7 @@ const StudentAnalytics = () => {
       <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <Link 
-            to="/analytics" 
+            to="/faculty/analytics" 
             className="inline-flex items-center gap-2 text-gray-500 hover:text-primary transition-colors font-medium mb-4"
           >
             <ArrowLeft size={18} />

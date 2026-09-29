@@ -35,7 +35,7 @@ const Analytics = () => {
         <div className="flex items-center gap-4">
           <DateFilter />
           <Link
-            to="/reports"
+            to="/faculty/reports"
             className="px-6 py-2.5 bg-white border border-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all flex items-center gap-2 shadow-sm"
           >
             <Download size={20} />
@@ -51,13 +51,13 @@ const Analytics = () => {
       <div className="mb-8">
         <h2 className="text-xl font-bold text-secondary mb-4">Quick Navigation</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Link to="/analytics/course" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-primary/30 transition-all text-center font-semibold text-gray-700 hover:text-primary">
+          <Link to="/faculty/analytics/course/all" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-primary/30 transition-all text-center font-semibold text-gray-700 hover:text-primary">
             Course Analytics
           </Link>
-          <Link to="/analytics/student" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-primary/30 transition-all text-center font-semibold text-gray-700 hover:text-primary">
+          <Link to="/faculty/analytics/student/all" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-primary/30 transition-all text-center font-semibold text-gray-700 hover:text-primary">
             Student Analytics
           </Link>
-          <Link to="/analytics/assignment" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-primary/30 transition-all text-center font-semibold text-gray-700 hover:text-primary">
+          <Link to="/faculty/analytics/assignment/all" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-primary/30 transition-all text-center font-semibold text-gray-700 hover:text-primary">
             Assignment Analytics
           </Link>
         </div>

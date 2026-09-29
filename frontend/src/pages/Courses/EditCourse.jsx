@@ -15,7 +15,7 @@ const EditCourse = () => {
         const data = await getCourseById(id);
         setCourse(data);
       } catch (err) {
-        navigate('/courses');
+        navigate('/faculty/courses');
       }
     };
     fetchCourse();
@@ -24,7 +24,7 @@ const EditCourse = () => {
   const handleUpdate = async (formData) => {
     try {
       await updateCourse(id, formData);
-      navigate('/courses');
+      navigate('/faculty/courses');
     } catch (err) {
       alert('Failed to update course.');
     }
@@ -35,7 +35,7 @@ const EditCourse = () => {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-6">
-        <Link to="/courses" className="inline-flex items-center gap-2 text-gray-500 hover:text-primary transition-colors mb-4">
+        <Link to="/faculty/courses" className="inline-flex items-center gap-2 text-gray-500 hover:text-primary transition-colors mb-4">
           <ArrowLeft size={16} />
           Back to Courses
         </Link>

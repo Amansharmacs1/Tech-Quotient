@@ -6,6 +6,7 @@ import errorHandler from './middleware/errorHandler.js';
 
 // Route Imports
 import authRoutes from './routes/authRoutes.js';
+import announcementRoutes from './routes/announcementRoutes.js';
 import courseRoutes from './routes/courseRoutes.js';
 import problemRoutes from './routes/problemRoutes.js';
 import assignmentRoutes from './routes/assignmentRoutes.js';
@@ -48,6 +49,7 @@ app.get('/', (req, res) => {
 
 // REST API Gateway Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/announcements', announcementRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/problems', problemRoutes);
 app.use('/api/assignments', assignmentRoutes);

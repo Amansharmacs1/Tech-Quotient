@@ -80,7 +80,7 @@ const Courses = () => {
           <p className="text-gray-500">Manage all your courses from one place.</p>
         </div>
         <Link
-          to="/courses/create"
+          to="/faculty/courses/create"
           className="px-5 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-opacity-90 transition-all flex items-center gap-2 shadow-sm shadow-primary/30"
         >
           <Plus size={20} />

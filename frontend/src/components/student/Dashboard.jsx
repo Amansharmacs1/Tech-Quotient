@@ -25,6 +25,7 @@ import {
 } from '../../data/mockData';
 
 export default function Dashboard({ role = 'student', setActiveTab, onSelectCourse, onSelectProblem }) {
+  const { user } = useAuth();
   const isFaculty = role === 'faculty';
 
   // Topic bar chart data based on role

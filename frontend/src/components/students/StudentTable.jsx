@@ -58,7 +58,7 @@ const StudentTable = ({ students }) => {
                 <td className="py-4 px-6">
                   <div className="flex items-center justify-end gap-1">
                     <Link
-                      to={`/students/${student._id}`}
+                      to={`/faculty/students/${student._id}`}
                       className="p-2 text-gray-400 hover:text-primary rounded-lg transition-colors"
                       title="View Profile"
                     >

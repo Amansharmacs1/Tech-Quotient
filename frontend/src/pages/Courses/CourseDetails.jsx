@@ -16,7 +16,7 @@ const CourseDetails = () => {
         const data = await getCourseById(id);
         setCourse(data);
       } catch (err) {
-        navigate('/courses');
+        navigate('/faculty/courses');
       } finally {
         setLoading(false);
       }
@@ -31,7 +31,7 @@ const CourseDetails = () => {
     <div className="max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <Link to="/courses" className="inline-flex items-center gap-2 text-gray-500 hover:text-primary transition-colors mb-4">
+        <Link to="/faculty/courses" className="inline-flex items-center gap-2 text-gray-500 hover:text-primary transition-colors mb-4">
           <ArrowLeft size={16} />
           Back to Courses
         </Link>
