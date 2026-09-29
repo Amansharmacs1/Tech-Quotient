@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent";
 
 const callGemini = async (prompt, systemInstruction, isJson = true) => {
   const API_KEY = process.env.AI_API_KEY;
@@ -147,7 +147,7 @@ export const chatWithAssistantService = async (message, history = []) => {
 
     const payload = {
       contents: formattedHistory,
-      systemInstruction: { parts: [{ text: "You are TechQuotient AI Teaching Assistant for computer science faculty. Help them analyze student performance, recommend teaching interventions, create programming assignments, and organize coding tests. Return concise, markdown-formatted responses." }] }
+      system_instruction: { parts: [{ text: "You are TechQuotient AI Teaching Assistant for computer science faculty. Help them analyze student performance, recommend teaching interventions, create programming assignments, and organize coding tests. Return concise, markdown-formatted responses." }] }
     };
 
     const API_KEY = process.env.AI_API_KEY;
@@ -165,16 +165,9 @@ export const chatWithAssistantService = async (message, history = []) => {
     };
   } catch (error) {
     console.warn("Gemini API not available for faculty chat, using intelligent assistant engine:", error.message);
-    const m = (message || '').toLowerCase();
-    let reply = "Hello Professor! I can help you generate algorithmic problems, evaluate assignment submissions, analyze student score distributions, or design custom rubrics.";
     
-    if (m.includes('at-risk') || m.includes('weak') || m.includes('struggl')) {
-      reply = "Based on recent submissions, **18% of students** are struggling with **Recursion & Dynamic Programming** boundary conditions. I recommend publishing a 3-problem diagnostic assignment focusing on bottom-up memoization.";
-    } else if (m.includes('assignment') || m.includes('create') || m.includes('generate')) {
-      reply = "I've reviewed the current syllabus for **Data Structures & Algorithms**. A recommended next assignment would be: **Graph Traversals & Topological Sorting** (3 Problems: 1 Easy BFS, 1 Medium Dijkstra, 1 Hard Minimum Spanning Tree).";
-    } else if (m.includes('student') || m.includes('performance') || m.includes('analytics')) {
-      reply = "Class average across recent test cases is **78.5%**. Top scoring modules are *Arrays & Hash Maps* (92%), while *AVL Trees* has the lowest first-pass acceptance rate (42%).";
-    }
+    let errMsg = error.response?.data?.error?.message || error.message;
+    let reply = `Gemini API Error: ${errMsg}. Please check your AI_API_KEY in the .env file.`;
 
     return {
       role: 'ai',
@@ -184,8 +177,30 @@ export const chatWithAssistantService = async (message, history = []) => {
 };
 
 // 4. Student TechBot Programming Mentor
-export const generateAiResponseService = async ({ query, code, context = 'chat' }) => {
+export const generateAiResponseService = async ({ query, code, context = null }) => {
   const apiKey = process.env.AI_API_KEY;
+
+  let problemDesc = 'N/A';
+  let language = 'N/A';
+  let output = 'N/A';
+  if (context && context.problem) {
+    problemDesc = context.problem.description || 'N/A';
+  }
+  if (context && context.language) language = context.language;
+  if (context && context.output) output = context.output;
+
+  const systemInstruction = `You are TechBot, an encouraging, step-by-step programming mentor at TechQuotient.
+Your role is to give targeted debugging hints, logic explanations, and edge-case guidance.
+DO NOT hallucinate answers or dump complete working solutions. Instead, guide the student to the answer.
+  
+Active Context:
+Problem Description: ${problemDesc}
+Language: ${language}
+User's Code:
+${code || 'N/A'}
+Recent Outputs/Errors:
+${output}
+`;
 
   if (apiKey && apiKey.trim() !== '') {
     try {
@@ -193,7 +208,8 @@ export const generateAiResponseService = async ({ query, code, context = 'chat' 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: `You are TechBot, an AI programming mentor on TechQuotient. Query: ${query}\nCode:\n${code || 'N/A'}` }] }]
+          system_instruction: { parts: [{ text: systemInstruction }] },
+          contents: [{ parts: [{ text: `User Query: ${query}` }] }]
         })
       });
 
@@ -207,13 +223,25 @@ export const generateAiResponseService = async ({ query, code, context = 'chat' 
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           };
         }
+      } else {
+        const errData = await response.json();
+        return {
+          text: `Gemini API Error (${response.status}): ${errData.error?.message || 'Unknown Error'}. Please check your AI_API_KEY in the .env file.`,
+          code: null,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
       }
     } catch (err) {
       console.warn('AI API request failed, using intelligent assistant mentor engine:', err.message);
+      return {
+          text: `Network/Connection Error to Gemini API: ${err.message}`,
+          code: null,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
     }
   }
 
-  // Intelligent fallback assistant engine for Student TechBot
+  // Fallback intelligent assistant engine for Student TechBot
   const q = (query || '').toLowerCase();
   let text = '';
   let responseCode = null;
@@ -230,7 +258,7 @@ export const generateAiResponseService = async ({ query, code, context = 'chat' 
   } else if (q.includes('error') || q.includes('bug') || q.includes('syntax') || q.includes('debug')) {
     text = "I checked your code snippet. Watch out for off-by-one array index boundary conditions (`i <= n` vs `i < n`), null pointer dereferencing on root nodes, or uninitialized variables.";
   } else {
-    text = `Great question! When tackling this problem, start by identifying the underlying data structure pattern (e.g. Two Pointers, Sliding Window, or Hash Map). Write unit test cases for empty arrays, single-element cases, and extreme duplicate values.`;
+    text = `Great question! When tackling this problem (${problemDesc !== 'N/A' ? problemDesc.substring(0, 50) + '...' : 'Data Structures'}), start by identifying the underlying data structure pattern. Check your code logic and edge cases!`;
   }
 
   return {

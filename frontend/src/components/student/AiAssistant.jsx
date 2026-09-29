@@ -15,7 +15,7 @@ import {
 import { studentProfile } from '../../data/mockData';
 import { sendAiQueryApi } from '../../services/api';
 
-export default function AiAssistant({ setActiveTab }) {
+export default function AiAssistant({ setActiveTab, activeContext, isWorkspaceTab }) {
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -52,7 +52,7 @@ export default function AiAssistant({ setActiveTab }) {
     if (!textToSend) setInputMessage('');
     setIsTyping(true);
 
-    const apiRes = await sendAiQueryApi(query, null);
+    const apiRes = await sendAiQueryApi(query, activeContext ? activeContext.code : null, activeContext);
 
     if (apiRes && apiRes.text) {
       setMessages(prev => [...prev, {
@@ -95,7 +95,7 @@ export default function AiAssistant({ setActiveTab }) {
   return (
     <div className="page-body animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', height: 'calc(100vh - 120px)', minHeight: '650px' }}>
       
-      {/* Header */}
+      {!isWorkspaceTab && (/* Header */
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <div style={{ width: '42px', height: '42px', borderRadius: 'var(--radius-md)', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
@@ -116,7 +116,7 @@ export default function AiAssistant({ setActiveTab }) {
         </button>
       </div>
 
-      {/* Main Chat Box */}
+      )} {/* Main Chat Box */}
       <div className="card" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden' }}>
         
         {/* Presets Bar */}

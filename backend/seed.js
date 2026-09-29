@@ -81,7 +81,6 @@ const seedData = async () => {
       facultyId: facultyUser._id.toString(),
       department: 'Computer Science',
       semester: 'Fall 2026',
-      progress: 78,
       sections: 13,
       studentsCount: 120,
       studentsEnrolled: 120,
@@ -113,7 +112,6 @@ const seedData = async () => {
       facultyId: facultyUser._id.toString(),
       department: 'Computer Science',
       semester: 'Fall 2026',
-      progress: 85,
       sections: 8,
       studentsCount: 95,
       studentsEnrolled: 95

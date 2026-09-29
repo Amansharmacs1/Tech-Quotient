@@ -22,7 +22,7 @@ export default function Profile({ role = 'student', onUpdateProfile }) {
   // Set default fallbacks if missing
   const profile = {
     ...user,
-    name: user?.name || 'Student',
+    name: (user?.email ? user.email.split('@')[0] : user?.name) || 'Student',
     email: user?.email || '',
     department: user?.department || 'Computer Science & Engineering',
     institution: user?.institution || 'Chitkara University',

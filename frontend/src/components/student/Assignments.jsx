@@ -1,12 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Play, Send, CheckCircle2, RotateCcw, FileText, Clock, AlertCircle, Award, Check } from 'lucide-react';
 import { studentAssignments as initialAssignments } from '../../data/mockData';
-import { runCodeApi, submitAssignmentApi } from '../../services/api';
+import { runCodeApi, submitAssignmentApi, fetchAssignments } from '../../services/api';
 import MonacoCodeEditor from './MonacoCodeEditor';
 
 export default function Assignments({ role = 'student' }) {
   const [assignments, setAssignments] = useState(initialAssignments);
   const [selectedAsgnId, setSelectedAsgnId] = useState(initialAssignments[0]?.id || 'asgn-1');
+
+  useEffect(() => {
+    const loadAssignments = async () => {
+      try {
+        const data = await fetchAssignments();
+        if (data && data.length > 0) {
+          // Map backend assignment fields to frontend mock fields if needed
+          const formatted = data.map(a => ({
+            id: a._id || a.id,
+            title: a.title,
+            course: a.course?.title || a.course || 'Computer Science',
+            dueDate: new Date(a.dueDate || a.createdAt).toLocaleDateString(),
+            status: a.status || 'Pending',
+            points: a.points || a.totalMarks || 100,
+            description: a.description,
+            guidelines: a.guidelines || [
+              "Ensure code contains a valid main entry point.",
+              "Test edge cases such as empty input arrays and null pointers.",
+              "Submit before the due date to avoid automated late penalties."
+            ]
+          }));
+          setAssignments(formatted);
+          if (formatted.length > 0) setSelectedAsgnId(formatted[0].id);
+        }
+      } catch (err) {
+        console.error('Failed to fetch assignments', err);
+      }
+    };
+    loadAssignments();
+  }, []);
   const [filter, setFilter] = useState('all');
   const [language, setLanguage] = useState('java');
   const [code, setCode] = useState(`import java.util.*;\n\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println("TechQuotient Academic Assignment Solution");\n    }\n}`);

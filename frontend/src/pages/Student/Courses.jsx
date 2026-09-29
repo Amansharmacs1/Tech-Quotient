@@ -6,7 +6,7 @@ export default function Courses() {
   const navigate = useNavigate();
 
   const handleSelectCourse = (course) => {
-    navigate(`/student/courses/${course?.id || course?.code || 'cse-201'}`);
+    navigate(`/student/courses/${course?._id || course?.id || course?.code || 'cse-201'}`);
   };
 
   return <StudentCourses onSelectCourse={handleSelectCourse} />;

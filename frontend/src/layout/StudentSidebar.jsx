@@ -17,8 +17,7 @@ const studentNavItems = [
   { name: 'Courses', path: '/student/courses', icon: BookOpen },
   { name: 'Coding Problems', path: '/student/practice', icon: Code2 },
   { name: 'Assignments', path: '/student/assignments', icon: FileText },
-  { name: 'Contests Arena', path: '/student/contests', icon: Trophy },
-  { name: 'Analytics', path: '/student/analytics', icon: BarChart3 },
+    { name: 'Analytics', path: '/student/analytics', icon: BarChart3 },
   { name: 'TechBot AI Mentor', path: '/student/ai-mentor', icon: Bot },
   { name: 'Announcements', path: '/student/notifications', icon: Bell },
   { name: 'Profile & Badges', path: '/student/profile', icon: UserCheck }

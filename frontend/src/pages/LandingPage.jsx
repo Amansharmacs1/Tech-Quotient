@@ -435,8 +435,7 @@ export default function LandingPage() {
               <span style={{ cursor: 'pointer' }} onClick={() => handlePortalJump('student')}>Dashboard</span>
               <span style={{ cursor: 'pointer' }} onClick={() => handlePortalJump('student')}>Coding Workspace</span>
               <span style={{ cursor: 'pointer' }} onClick={() => handlePortalJump('student')}>Assignments</span>
-              <span style={{ cursor: 'pointer' }} onClick={() => handlePortalJump('student')}>Contests Arena</span>
-              <span style={{ cursor: 'pointer' }} onClick={() => handlePortalJump('student')}>TechBot AI Mentor</span>
+                            <span style={{ cursor: 'pointer' }} onClick={() => handlePortalJump('student')}>TechBot AI Mentor</span>
             </div>
           </div>
 

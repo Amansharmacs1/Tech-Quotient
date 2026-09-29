@@ -1,3 +1,5 @@
+import User from "../models/User.js";
+
 import Course from '../models/Course.js';
 import { getStoreData, addCourse, updateCourse as storeUpdateCourse, deleteCourse as storeDeleteCourse } from '../services/store.js';
 import { sendSuccess, sendError } from '../utils/apiResponse.js';
@@ -19,7 +21,27 @@ export const getCourses = async (req, res, next) => {
         ];
       }
 
-      const courses = await Course.find(query).sort({ createdAt: -1 });
+      
+      let courses = await Course.find(query).sort({ createdAt: -1 });
+      
+      if (req.user && req.user.role === 'student') {
+        const user = await User.findById(req.user._id);
+        if (user && user.courseProgress) {
+          courses = courses.map(course => {
+            const courseObj = course.toObject();
+            const p = user.courseProgress.find(cp => cp.courseId.toString() === courseObj._id.toString());
+            courseObj.progress = p ? p.progress : 0;
+            return courseObj;
+          });
+        } else {
+          courses = courses.map(course => {
+            const courseObj = course.toObject();
+            courseObj.progress = 0;
+            return courseObj;
+          });
+        }
+      }
+
       if (courses && courses.length > 0) {
         return res.json({
           success: true,
@@ -181,6 +203,106 @@ export const deleteCourse = async (req, res, next) => {
 
     storeDeleteCourse(id);
     return sendSuccess(res, { message: 'Course deleted successfully' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+export const getCourseProgress = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user._id;
+    
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    
+    let progress = user.courseProgress?.find(p => p.courseId.toString() === id);
+    if (!progress) {
+      progress = { courseId: id, progress: 0, modules: [] };
+    }
+    
+    return res.json({ success: true, data: progress });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateCourseProgress = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user._id;
+    const { moduleId, topicId, done, currentCourseModules } = req.body;
+    
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    
+    if (!user.courseProgress) {
+      user.courseProgress = [];
+    }
+    
+    let progressIndex = user.courseProgress.findIndex(p => p.courseId.toString() === id);
+    if (progressIndex === -1) {
+      user.courseProgress.push({ courseId: id, progress: 0, modules: [] });
+      progressIndex = user.courseProgress.length - 1;
+    }
+    
+    const progressObj = user.courseProgress[progressIndex];
+    
+    let moduleIndex = progressObj.modules.findIndex(m => m.moduleId === moduleId?.toString());
+    if (moduleIndex === -1 && moduleId) {
+      progressObj.modules.push({ moduleId: moduleId.toString(), completed: false, topics: [] });
+      moduleIndex = progressObj.modules.length - 1;
+    }
+    
+    if (moduleIndex !== -1 && topicId) {
+      const moduleObj = progressObj.modules[moduleIndex];
+      let topicIndex = moduleObj.topics.findIndex(t => t.topicId === topicId?.toString());
+      if (topicIndex === -1) {
+        moduleObj.topics.push({ topicId: topicId.toString(), done });
+      } else {
+        moduleObj.topics[topicIndex].done = done;
+      }
+    }
+    
+    // Calculate progress
+    if (currentCourseModules) {
+      let totalTopics = 0;
+      let completedTopics = 0;
+      
+      currentCourseModules.forEach(m => {
+        const pMod = progressObj.modules.find(pm => pm.moduleId === m.id?.toString());
+        if (m.topics) {
+          totalTopics += m.topics.length;
+          m.topics.forEach(t => {
+            const pTopic = pMod?.topics.find(pt => pt.topicId === (t.id || t.num)?.toString());
+            if (pTopic?.done) completedTopics++;
+          });
+        } else {
+          totalTopics += 4; // Mock estimate
+          if (pMod?.completed) completedTopics += 4;
+        }
+      });
+      
+      progressObj.progress = totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0;
+    }
+    
+    await user.save();
+    return res.json({ success: true, data: progressObj });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const downloadCourseNotes = async (req, res, next) => {
+  try {
+    const { id, moduleId } = req.params;
+    // In a real application, fetch the actual file from S3 or local disk.
+    // Here we generate a mock text file as notes.
+    const notesContent = `Notes for Course ${id} - Module ${moduleId}\n\nThese are the downloaded notes...\n`;
+    res.setHeader('Content-disposition', `attachment; filename=notes_course_${id}_module_${moduleId}.txt`);
+    res.setHeader('Content-type', 'text/plain');
+    res.send(notesContent);
   } catch (error) {
     next(error);
   }

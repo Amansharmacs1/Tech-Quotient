@@ -27,6 +27,19 @@ const userSchema = new mongoose.Schema({
   activeAssignmentsCount: { type: Number, default: 3 },
   enrolledCoursesCount: { type: Number, default: 3 },
   enrolledCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }],
+  courseProgress: [{
+    courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
+    progress: { type: Number, default: 0 },
+    modules: [{
+      moduleId: String,
+      completed: { type: Boolean, default: false },
+      topics: [{
+        topicId: String,
+        done: { type: Boolean, default: false }
+      }]
+    }]
+  }],
+
   globalRank: { type: Number, default: 12 },
   avatar: { 
     type: String, 

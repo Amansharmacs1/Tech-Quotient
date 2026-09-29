@@ -1,5 +1,5 @@
 import express from 'express';
-import { getCourses, getCourseById, createCourse, updateCourse, deleteCourse } from '../controllers/courseController.js';
+import { getCourses, getCourseById, createCourse, updateCourse, deleteCourse, getCourseProgress, updateCourseProgress, downloadCourseNotes } from '../controllers/courseController.js';
 import { protect, requireRole } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -14,3 +14,10 @@ router.route('/:id')
   .delete(protect, requireRole('faculty', 'admin'), deleteCourse);
 
 export default router;
+
+router.route('/:id/progress')
+  .get(protect, getCourseProgress)
+  .put(protect, updateCourseProgress);
+
+router.route('/:id/modules/:moduleId/notes')
+  .get(protect, downloadCourseNotes);

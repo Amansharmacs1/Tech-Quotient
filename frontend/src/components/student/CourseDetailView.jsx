@@ -41,57 +41,86 @@ export default function CourseDetailView({ currentCourse, onBack, onOpenAssignme
     ]
   };
 
+  
   const [course, setCourse] = useState(initialCourse);
+  const [progressData, setProgressData] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  React.useEffect(() => {
+    if (currentCourse) {
+      setCourse({ ...initialCourse, ...currentCourse });
+    }
+  }, [currentCourse]);
+
+  React.useEffect(() => {
+    const loadProgress = async () => {
+      if (course._id || course.id) {
+        const { fetchCourseProgress } = await import('../../services/api.js');
+        const data = await fetchCourseProgress(course._id || course.id);
+        if (data) {
+          setProgressData(data);
+        }
+      }
+    };
+    loadProgress();
+  }, [course._id, course.id]);
+
+  // Derive topics with progress
+  const getEnrichedModule = (mod) => {
+    if (!mod) return null;
+    const pMod = progressData?.modules?.find(m => m.moduleId === (mod.id || mod._id)?.toString());
+    const enrichedTopics = (mod.topics || []).map(t => {
+      const pTopic = pMod?.topics?.find(pt => pt.topicId === (t.id || t._id || t.num)?.toString());
+      return { ...t, done: pTopic?.done || false };
+    });
+    return { ...mod, topics: enrichedTopics };
+  };
+
   const [selectedTab, setSelectedTab] = useState('content');
   const [selectedModuleId, setSelectedModuleId] = useState(6);
   const [toastMessage, setToastMessage] = useState('');
 
-  const selectedModule = course.modules?.find(m => m.id === selectedModuleId) || course.modules?.[0];
+  
+  const baseSelectedModule = course.modules?.find(m => m.id === selectedModuleId) || course.modules?.[0];
+  const selectedModule = getEnrichedModule(baseSelectedModule);
+  const displayProgress = progressData?.progress !== undefined ? progressData.progress : 0;
 
-  const handleToggleTopic = (topicId) => {
-    setCourse(prev => {
-      const updatedModules = prev.modules.map(mod => {
-        if (mod.id === selectedModuleId && mod.topics) {
-          const updatedTopics = mod.topics.map(t => {
-            if (t.id === topicId || t.num === topicId) {
-              return { ...t, done: !t.done };
-            }
-            return t;
-          });
-          const doneCount = updatedTopics.filter(t => t.done).length;
-          const status = `${Math.round((doneCount / updatedTopics.length) * 100)}%`;
-          return { ...mod, topics: updatedTopics, status };
-        }
-        return mod;
+
+  
+  const handleToggleTopic = async (topicId) => {
+    if (isUpdating || !selectedModule) return;
+    setIsUpdating(true);
+    try {
+      const { updateCourseProgressApi } = await import('../../services/api.js');
+      const topic = selectedModule.topics?.find(t => t.id === topicId || t.num === topicId);
+      const newDoneState = !topic?.done;
+
+      const updatedProgress = await updateCourseProgressApi(course._id || course.id, {
+        moduleId: selectedModule.id || selectedModule._id,
+        topicId: topicId,
+        done: newDoneState,
+        currentCourseModules: course.modules
       });
 
-      // Calculate total course progress
-      let totalTopics = 0;
-      let completedTopics = 0;
-      updatedModules.forEach(m => {
-        if (m.topics) {
-          totalTopics += m.topics.length;
-          completedTopics += m.topics.filter(t => t.done).length;
-        } else if (m.completed || m.status === 'DONE') {
-          totalTopics += 4;
-          completedTopics += 4;
-        }
-      });
-
-      const newProgress = Math.round((completedTopics / Math.max(1, totalTopics)) * 100);
-
-      return {
-        ...prev,
-        modules: updatedModules,
-        progress: newProgress
-      };
-    });
+      if (updatedProgress) {
+        setProgressData(updatedProgress);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
-  const handleDownloadNotes = () => {
-    setToastMessage(`📥 Downloading syllabus & slide notes for ${selectedModule.title}...`);
+
+  const handleDownloadNotes = async () => {
+    if (!selectedModule) return;
+    setToastMessage(`📥 Downloading syllabus & slide notes for ${selectedModule.title || selectedModule.name}...`);
+    const { downloadModuleNotesApi } = await import('../../services/api.js');
+    await downloadModuleNotesApi(course._id || course.id, selectedModule.id || selectedModule._id);
     setTimeout(() => setToastMessage(''), 3000);
   };
+
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -150,10 +179,10 @@ export default function CourseDetailView({ currentCourse, onBack, onOpenAssignme
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <div className="progress-bar-track" style={{ width: '100px', height: '6px' }}>
-            <div className="progress-bar-fill" style={{ width: `${course.progress || 94}%` }}></div>
+            <div className="progress-bar-fill" style={{ width: `${displayProgress}%` }}></div>
           </div>
           <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--primary-orange)' }}>
-            {course.progress || 94}% Completed
+            {displayProgress}% Completed
           </span>
         </div>
       </div>

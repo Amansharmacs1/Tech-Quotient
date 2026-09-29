@@ -22,7 +22,6 @@ import StudentCourses from './pages/Student/Courses';
 import StudentCourseDetails from './pages/Student/CourseDetails';
 import StudentPractice from './pages/Student/Practice';
 import StudentAssignments from './pages/Student/Assignments';
-import StudentContests from './pages/Student/Contests';
 import StudentAnalytics from './pages/Student/Analytics';
 import StudentAiMentor from './pages/Student/AiMentor';
 import StudentNotifications from './pages/Student/Notifications';
@@ -98,8 +97,7 @@ export default function App() {
         <Route path="courses/:id" element={<StudentCourseDetails />} />
         <Route path="practice" element={<StudentPractice />} />
         <Route path="assignments" element={<StudentAssignments />} />
-        <Route path="contests" element={<StudentContests />} />
-        <Route path="analytics" element={<StudentAnalytics />} />
+                <Route path="analytics" element={<StudentAnalytics />} />
         <Route path="ai-mentor" element={<StudentAiMentor />} />
         <Route path="notifications" element={<StudentNotifications />} />
         <Route path="profile" element={<StudentProfile />} />

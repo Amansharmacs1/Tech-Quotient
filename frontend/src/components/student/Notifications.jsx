@@ -57,8 +57,7 @@ export default function Notifications({ setActiveTab }) {
     // Navigate based on type
     if (setActiveTab) {
       if (item.type === 'assignment') setActiveTab('assignments');
-      else if (item.type === 'contest') setActiveTab('contests');
-      else if (item.type === 'ai') setActiveTab('coding-workspace');
+            else if (item.type === 'ai') setActiveTab('coding-workspace');
     }
   };
 

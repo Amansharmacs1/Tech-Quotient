@@ -9,9 +9,27 @@ import {
   Download,
   ChevronRight
 } from 'lucide-react';
-import { coursesData } from '../../data/mockData';
+
+import { coursesData as mockCoursesData } from '../../data/mockData';
+import { fetchCourses } from '../../services/api';
+
+
 
 export default function Courses({ onSelectCourse }) {
+  const [coursesData, setCoursesData] = React.useState([]);
+
+  React.useEffect(() => {
+    const loadCourses = async () => {
+      const data = await fetchCourses();
+      if (data && data.length > 0) {
+        setCoursesData(data);
+      } else {
+        setCoursesData(mockCoursesData);
+      }
+    };
+    loadCourses();
+  }, []);
+
   return (
     <div className="page-body animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
       <div>
@@ -25,7 +43,7 @@ export default function Courses({ onSelectCourse }) {
 
       <div className="grid-2">
         {coursesData.map(course => (
-          <div key={course.id} className="card card-hover" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <div key={course._id || course.id} className="card card-hover" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
                 <span className="badge badge-orange">{course.code}</span>
@@ -47,7 +65,7 @@ export default function Courses({ onSelectCourse }) {
 
               <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.75rem' }}>Course Modules</h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
-                {course.modules.map((m, idx) => (
+                {(course.modules || []).map((m, idx) => (
                   <div key={idx} style={{
                     padding: '0.65rem 0.85rem',
                     borderRadius: 'var(--radius-sm)',
@@ -67,7 +85,7 @@ export default function Courses({ onSelectCourse }) {
                         <Clock size={16} color="var(--text-muted)" />
                       )}
                       <span style={{ fontWeight: m.current ? 700 : 400, color: m.current ? 'var(--primary-orange)' : 'var(--text-main)' }}>
-                        {m.name}
+                        {m.title || m.name}
                       </span>
                     </div>
                     {m.current && <span className="badge badge-orange" style={{ fontSize: '0.7rem' }}>IN PROGRESS</span>}

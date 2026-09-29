@@ -19,8 +19,7 @@ export default function Sidebar({ role = 'student', activeTab, setActiveTab }) {
     { id: 'courses', label: 'Courses', icon: BookOpen },
     { id: 'coding-workspace', label: 'Coding Problems', icon: Code2 },
     { id: 'assignments', label: 'Assignments', icon: FileText },
-    { id: 'contests', label: 'Contests', icon: Trophy },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+        { id: 'analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'notifications', label: 'Announcements', icon: Bell },
     { id: 'settings', label: 'Settings', icon: Settings }
   ];

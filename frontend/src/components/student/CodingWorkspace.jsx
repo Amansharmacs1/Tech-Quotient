@@ -3,9 +3,10 @@ import { Play, Send, RotateCcw, CheckCircle2, Clock, Zap, Cpu, Code2, Sparkles, 
 import { practiceProblems } from '../../data/mockData';
 import { runCodeApi, submitCodeApi } from '../../services/api';
 import MonacoCodeEditor from './MonacoCodeEditor';
+import AiAssistant from './AiAssistant';
 
-export default function CodingWorkspace({ selectedProblem, onSelectProblem, role = 'student' }) {
-  const [problem, setProblem] = useState(selectedProblem || practiceProblems[0]);
+export default function CodingWorkspace({ selectedProblem, onSelectProblem, problemsList = practiceProblems, role = 'student' }) {
+  const [problem, setProblem] = useState(selectedProblem || problemsList[0]);
   const [language, setLanguage] = useState('java');
   const [code, setCode] = useState('');
   const [output, setOutput] = useState('');
@@ -37,7 +38,16 @@ export default function CodingWorkspace({ selectedProblem, onSelectProblem, role
   // Code Validator helper to detect syntax / compilation errors
   const validateCode = (sourceCode, lang) => {
     if (!sourceCode || !sourceCode.trim()) {
-      return { valid: false, error: 'COMPILATION ERROR: Source code cannot be empty.' };
+      return { valid: false, error: 'Please write code before submitting. Source code cannot be empty.' };
+    }
+    
+    // Check if the user hasn't written anything beyond the boilerplate
+    const defaultTemplates = problem.starterCode || {};
+    const template = defaultTemplates[lang] || defaultTemplates['java'] || '';
+    
+    const stripWhite = (str) => str.replace(/\s+/g, '');
+    if (template && stripWhite(sourceCode) === stripWhite(template)) {
+       return { valid: false, error: 'Please write code before submitting. You have only submitted the boilerplate.' };
     }
 
     // Check for invalid escape sequences or syntax corruptions like i\=
@@ -89,7 +99,7 @@ export default function CodingWorkspace({ selectedProblem, onSelectProblem, role
       return;
     }
 
-    const result = await runCodeApi(code, language, problem.id);
+    const result = await runCodeApi(code, language, problem._id || problem.id);
 
     if (result && result.output) {
       setOutput(result.output);
@@ -126,10 +136,21 @@ export default function CodingWorkspace({ selectedProblem, onSelectProblem, role
       return;
     }
 
-    const result = await submitCodeApi(code, language, problem.id);
+    const result = await submitCodeApi(code, language, problem._id || problem.id);
 
     if (result && result.output) {
       setOutput(result.output);
+      setSubmissionHistory(prev => [
+        {
+          id: Date.now(),
+          time: 'Just now',
+          status: result.status === 'ACCEPTED' ? 'ACCEPTED' : (result.status === 'WRONG_ANSWER' ? 'WRONG ANSWER' : 'ERROR'),
+          runtime: `${result.runtimeMs || 0}ms`,
+          memory: `${result.memoryMb || 0}MB`,
+          lang: language.toUpperCase()
+        },
+        ...prev
+      ]);
     } else {
       setTimeout(() => {
         const runtime = `${Math.floor(Math.random() * 12 + 6)}ms`;
@@ -172,9 +193,9 @@ export default function CodingWorkspace({ selectedProblem, onSelectProblem, role
         {/* Selector & Header */}
         <div style={{ padding: '1rem', borderBottom: '1px solid var(--border-color)', backgroundColor: '#f8fafc', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <select 
-            value={problem.id}
+            value={problem._id || problem._id || problem.id}
             onChange={(e) => {
-              const p = practiceProblems.find(item => item.id === e.target.value);
+              const p = problemsList.find(item => String(item._id || item.id) === String(e.target.value));
               if (p) {
                 setProblem(p);
                 if (onSelectProblem) onSelectProblem(p);
@@ -191,8 +212,8 @@ export default function CodingWorkspace({ selectedProblem, onSelectProblem, role
               cursor: 'pointer'
             }}
           >
-            {practiceProblems.map(p => (
-              <option key={p.id} value={p.id}>{p.title}</option>
+            {problemsList.map(p => (
+              <option key={p.id} value={p._id || p.id}>{p.title}</option>
             ))}
           </select>
 
@@ -203,7 +224,7 @@ export default function CodingWorkspace({ selectedProblem, onSelectProblem, role
 
         {/* Tab Headers */}
         <div style={{ display: 'flex', borderBottom: '1px solid var(--border-color)', backgroundColor: '#ffffff', padding: '0 1rem' }}>
-          {['description', 'testcases', 'submissions'].map((tab) => (
+          {['description', 'testcases', 'submissions', 'ai_mentor'].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -219,7 +240,7 @@ export default function CodingWorkspace({ selectedProblem, onSelectProblem, role
                 textTransform: 'capitalize'
               }}
             >
-              {tab === 'testcases' ? 'Test Cases' : tab === 'submissions' ? 'Submissions' : 'Description'}
+              {tab === 'testcases' ? 'Test Cases' : tab === 'submissions' ? 'Submissions' : tab === 'ai_mentor' ? 'AI Mentor' : 'Description'}
             </button>
           ))}
         </div>
@@ -325,6 +346,21 @@ export default function CodingWorkspace({ selectedProblem, onSelectProblem, role
               </div>
             </div>
           )}
+
+          {activeTab === 'ai_mentor' && (
+            <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <AiAssistant 
+                activeContext={{
+                  code,
+                  language,
+                  problem,
+                  output
+                }} 
+                isWorkspaceTab={true}
+              />
+            </div>
+          )}
+
         </div>
       </div>
 

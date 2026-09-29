@@ -152,20 +152,6 @@ export const fetchContests = async () => {
   return null;
 };
 
-export const registerContestApi = async (id) => {
-  try {
-    const res = await fetch(`${API_BASE_URL}/contests/${id}/register`, {
-      method: 'POST',
-      headers: getHeaders()
-    });
-    if (res.ok) {
-      return await res.json();
-    }
-  } catch (err) {
-    console.warn('API call failed, using contest registration fallback');
-  }
-  return null;
-};
 
 export const fetchNotifications = async () => {
   try {
@@ -180,12 +166,12 @@ export const fetchNotifications = async () => {
   return null;
 };
 
-export const sendAiQueryApi = async (query, code) => {
+export const sendAiQueryApi = async (query, code, context = null) => {
   try {
     const res = await fetch(`${API_BASE_URL}/ai/chat`, {
       method: 'POST',
       headers: getHeaders(),
-      body: JSON.stringify({ query, code })
+      body: JSON.stringify({ query, code, context })
     });
     if (res.ok) {
       const data = await res.json();
@@ -238,4 +224,50 @@ export const deleteAnnouncementApi = async (id) => {
   } catch (err) {
     console.error('Error deleting announcement API:', err);
   }
+};
+
+export const fetchCourseProgress = async (id) => {
+  try {
+    const res = await api.get(`/courses/${id}/progress`);
+    return res.data?.data;
+  } catch (err) {
+    console.error('Error fetching course progress:', err);
+    return null;
+  }
+};
+
+export const updateCourseProgressApi = async (id, data) => {
+  try {
+    const res = await api.put(`/courses/${id}/progress`, data);
+    return res.data?.data;
+  } catch (err) {
+    console.error('Error updating course progress:', err);
+    return null;
+  }
+};
+
+
+export const downloadModuleNotesApi = async (courseId, moduleId) => {
+  try {
+    const token = localStorage.getItem('techquotient_token') || localStorage.getItem('token');
+    const res = await fetch(`${API_BASE_URL}/courses/${courseId}/modules/${moduleId}/notes`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    if (res.ok) {
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `notes_course_${courseId}_module_${moduleId}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      return true;
+    }
+  } catch (err) {
+    console.error('Error downloading notes:', err);
+  }
+  return false;
 };
