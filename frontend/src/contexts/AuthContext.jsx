@@ -1,7 +1,17 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import * as authService from '../services/authService';
 
+
+const CURRENT_AUTH_VERSION = 'v2_clean';
+if (typeof window !== 'undefined' && localStorage.getItem('auth_version') !== CURRENT_AUTH_VERSION) {
+  localStorage.removeItem('techquotient_user');
+  localStorage.removeItem('techquotient_token');
+  localStorage.removeItem('token');
+  localStorage.setItem('auth_version', CURRENT_AUTH_VERSION);
+}
+
 const AuthContext = createContext(null);
+
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
