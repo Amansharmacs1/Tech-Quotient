@@ -6,7 +6,7 @@ import { updateProfileApi } from '../../services/authService';
 export default function Profile({ role = 'student', onUpdateProfile }) {
   const { user } = useAuth();
   
-  const displayName = (user?.email ? user.email.split('@')[0].replace(/[0-9]/g, '') : user?.name) || 'Student';
+  const displayName = user?.name || 'Student';
   const initial = displayName.charAt(0).toUpperCase();
 
   const profile = {

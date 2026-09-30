@@ -13,7 +13,7 @@ export default function Navbar({ portalType = 'faculty' }) {
     navigate('/login');
   };
 
-  const displayName = user?.email ? user.email.split('@')[0].replace(/[0-9]/g, '') : (user?.name || 'User');
+  const displayName = user?.name || 'User';
   const avatarUrl = user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=FFF1E8&color=F26422`;
 
   return (
